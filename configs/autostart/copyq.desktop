@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=CopyQ (histórico da área de transferência)
+Exec=flatpak run com.github.hluk.copyq --start-server
+Icon=com.github.hluk.copyq
+X-GNOME-Autostart-enabled=true
