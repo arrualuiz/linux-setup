@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Chrome Arrua
+Comment=Google Chrome – luizarrua16@gmail.com
+Exec=/usr/bin/google-chrome-stable --profile-directory=Default %U
+Icon=/home/arrua/.local/share/icons/chrome-perfis/pessoal.png
+Terminal=false
+Categories=Network;WebBrowser;
+StartupNotify=true
+StartupWMClass=Google-chrome

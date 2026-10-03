@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Jupyter Lab
+Comment=Notebooks Python no navegador
+Exec=/home/arrua/.local/bin/jupyter-lab --notebook-dir=/home/arrua
+Icon=/home/arrua/.local/share/pipx/venvs/jupyter/share/icons/hicolor/scalable/apps/jupyterlab.svg
+Terminal=true
+Categories=Development;

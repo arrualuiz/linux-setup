@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Chrome PUC
+Comment=Google Chrome – PUCPR (dev.luizarrua@gmail.com)
+Exec=/usr/bin/google-chrome-stable --user-data-dir=/home/arrua/.config/chrome-puc --class=ChromePUC https://pucpr.grupoa.education/plataforma/my-enrollments/courses https://teams.microsoft.com/v2/
+Icon=/home/arrua/.local/share/icons/chrome-perfis/puc.png
+Terminal=false
+Categories=Network;WebBrowser;
+StartupNotify=true
+StartupWMClass=ChromePUC

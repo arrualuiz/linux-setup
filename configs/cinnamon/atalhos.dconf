@@ -1,0 +1,34 @@
+[/]
+custom-list=['custom0', 'custom1', 'custom2', 'custom3', 'custom4']
+
+[custom-keybindings/custom0]
+binding=['<Primary><Alt>p']
+command='gtk-launch chrome-puc'
+name='Chrome PUC'
+
+[custom-keybindings/custom1]
+binding=['Print']
+command='flatpak run org.flameshot.Flameshot gui'
+name='Captura de tela (Flameshot)'
+
+[custom-keybindings/custom2]
+binding=['<Shift>Print']
+command='flatpak run com.github.dynobo.normcap -l por eng'
+name='Copiar texto da tela (NormCap OCR)'
+
+[custom-keybindings/custom3]
+binding=['<Super>v']
+command='flatpak run com.github.hluk.copyq menu'
+name='Histórico da área de transferência (CopyQ)'
+
+[custom-keybindings/custom4]
+binding=['<Super>period']
+command='flatpak run it.mijorus.smile'
+name='Emojis (Smile)'
+
+[media-keys]
+area-screenshot=@as []
+screenshot=@as []
+
+[wm]
+switch-to-workspace-up=['<Super>Tab', '<Control><Alt>Up', '<Alt>F1']
