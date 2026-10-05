@@ -51,5 +51,12 @@ echo "==> Nomes amigáveis das saídas de som (só vale com o mesmo hardware)"
 mkdir -p ~/.config/wireplumber/main.lua.d
 cp $C/wireplumber/51-nomes-audio.lua ~/.config/wireplumber/main.lua.d/
 
+echo "==> Energia: nunca suspender, nunca apagar a tela, sem bloqueio automático"
+gsettings set org.cinnamon.settings-daemon.plugins.power sleep-inactive-ac-timeout 0
+gsettings set org.cinnamon.settings-daemon.plugins.power sleep-display-ac 0
+gsettings set org.cinnamon.settings-daemon.plugins.power sleep-display-battery 0
+gsettings set org.cinnamon.desktop.session idle-delay 0
+gsettings set org.cinnamon.desktop.screensaver lock-enabled false
+
 echo
 echo "Pronto! Faça logout e login (ou reinicie) para tudo aparecer certinho."
