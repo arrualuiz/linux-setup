@@ -31,6 +31,18 @@ for f in org.gnome.Terminal com.microsoft.VSCode sublime_text dbeaver-ce firefox
   cp "$src" "$D/"; chmod +x "$D/$f.desktop"; gio set "$D/$f.desktop" metadata::trusted true 2>/dev/null || true
 done
 ln -sfn ~/dev/faculdade/pucpr/ads "$D/Faculdade"
+# Ícones livres pra arrastar: sem "organizar automaticamente", mas encaixando na grade.
+# O nemo-desktop regrava esse arquivo, então edita antes e mata com -9 (o Cinnamon reabre).
+m=~/.config/nemo/desktop-metadata
+mkdir -p ~/.config/nemo
+if grep -q '^\[desktop-monitor-0\]' "$m" 2>/dev/null; then
+  sed -i '/^nemo-icon-view-auto-layout=/d; /^\[desktop-monitor-0\]/a nemo-icon-view-auto-layout=false' "$m"
+else
+  printf '[desktop-monitor-0]\nnemo-icon-view-auto-layout=false\n' >> "$m"
+fi
+if pkill -9 -x nemo-desktop; then
+  sleep 2; pgrep -x nemo-desktop >/dev/null || (setsid nemo-desktop >/dev/null 2>&1 &)
+fi
 
 echo "==> Barras de tarefas: uma por monitor, botões separados por janela"
 d=~/.config/cinnamon/spices/grouped-window-list@cinnamon.org

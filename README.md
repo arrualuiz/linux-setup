@@ -89,7 +89,7 @@ Serve de guia caso eu formate ou troque de PC, e de diário dos problemas que j�
   - Monitor 2: menu + só as janelas abertas nele + relógio.
   - Applet "grouped-window-list" (instância 16 no painel 1, 17 no painel 2), altura 46, ícones 36.
   - **Cada janela tem seu botão** (sem agrupar), mostrando o título da janela.
-- **Ícones da área de trabalho** só no monitor principal.
+- **Ícones da área de trabalho** só no monitor principal, e **livres pra arrastar** ("Organizar automaticamente" desligado, mas encaixando na grade). Fica em `~/.config/nemo/desktop-metadata`. Pra ligar/desligar na mão: botão direito na área de trabalho.
 - **Correção da barra (Cinnamon 6.x):** havia um bug em que app fixado, ao abrir, aparecia só como ícone com o traço azul, sem o nome. Corrigi numa cópia do applet em `~/.local/share/cinnamon/applets/grouped-window-list@cinnamon.org/` (que tem prioridade sobre a do sistema). A mudança está em `configs/cinnamon/correcao-barra/appGroup.patch`. Para reaplicar: copiar `/usr/share/cinnamon/applets/grouped-window-list@cinnamon.org` para essa pasta, aplicar o patch e **reiniciar o Cinnamon** (Ctrl+Alt+Esc), porque só recarregar o applet não basta. ⚠️ Essa cópia não recebe as atualizações do Cinnamon. Se a barra der problema depois de uma atualização, apagar a pasta e reiniciar o Cinnamon.
 - **Apps fixados no monitor 1:** Terminal, Chrome Pessoal, Chrome PUC, Jupyter Lab, VS Code, IntelliJ, PyCharm, Android Studio, DBeaver.
 
