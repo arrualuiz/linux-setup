@@ -58,5 +58,27 @@ gsettings set org.cinnamon.settings-daemon.plugins.power sleep-display-battery 0
 gsettings set org.cinnamon.desktop.session idle-delay 0
 gsettings set org.cinnamon.desktop.screensaver lock-enabled false
 
+echo "==> Perfil de energia: desempenho"
+powerprofilesctl set performance 2>/dev/null || true
+
+if lspci | grep -q 'GT 420'; then
+  echo "==> GT 420: desligando a aceleração de vídeo no Chrome e no VS Code (com o nouveau ela trava o PC)"
+  if pgrep -x chrome >/dev/null; then
+    echo "   ⚠️ Feche os dois Chromes e rode este script de novo para valer neles."
+  else
+    for d in ~/.config/google-chrome ~/.config/chrome-puc; do
+      [ -f "$d/Local State" ] || continue
+      python3 - "$d/Local State" <<'EOF'
+import json, sys
+f = sys.argv[1]
+s = json.load(open(f))
+s["hardware_acceleration_mode"] = {"enabled": False}
+json.dump(s, open(f, "w"))
+EOF
+    done
+  fi
+  [ -f ~/.vscode/argv.json ] && sed -i 's|^\t// "disable-hardware-acceleration": true,|\t"disable-hardware-acceleration": true,|' ~/.vscode/argv.json
+fi
+
 echo
 echo "Pronto! Faça logout e login (ou reinicie) para tudo aparecer certinho."
