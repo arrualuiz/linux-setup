@@ -129,6 +129,16 @@ A GT 420 com nouveau não decodifica vídeo, então o YouTube roda todo no proce
   journalctl -b -1 -k | grep -c DATA_ERROR   # erros da placa no boot anterior
   ```
 
+### Congelou de novo, agora com o Chrome já sem aceleração (07/10/2026)
+- **Sintoma:** o PC travou inteiro entre 21:32 e 22:17. O log simplesmente para (não deu tempo de gravar o erro), e nem a tarefa automática das 22:17 rodou, ou seja, o sistema todo parou, não só a tela.
+- **Suspeito principal:** o **Monitor do Sistema** (`gnome-system-monitor`). Ele é um app GTK4, que também desenha usando a placa de vídeo. Em 2 dias ele derrubou a GT 420 três vezes (`nouveau ... gr: TRAP ... gnome-system-mo[...]` e depois o app fecha sozinho). A última foi às 21:00, meia hora antes do travamento. Depois de um erro desses o driver nouveau pode ficar instável.
+- **Solução:** `export GSK_RENDERER=cairo` no `~/.profile`, para os apps GTK4 desenharem sem a placa de vídeo. Vale a partir do próximo login. O `aplicar-configuracoes.sh` já faz isso se detectar a GT 420.
+- **Como conferir:**
+  ```bash
+  echo $GSK_RENDERER                       # tem que mostrar: cairo
+  journalctl -b -1 -k | grep -c 'gr: TRAP' # erros da placa no boot anterior
+  ```
+
 ### Erros "DMAR" da placa de som (06/10/2026)
 - **Sintoma:** milhares de linhas `DMAR: [DMA Read NO_PASID] Request device [07:00.0] ... PTE Read access is not set` no log (4.524 num boot só). Pode causar estalos ou cortes no som.
 - **Causa:** o kernel liga a proteção de memória (IOMMU) no modo "Translated". A placa de som PCI antiga (C-Media) lê um pouquinho além do buffer dela, e a proteção bloqueia.

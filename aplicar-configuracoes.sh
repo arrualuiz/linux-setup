@@ -74,7 +74,7 @@ echo "==> Perfil de energia: desempenho"
 powerprofilesctl set performance 2>/dev/null || true
 
 if lspci | grep -q 'GT 420'; then
-  echo "==> GT 420: desligando a aceleração de vídeo no Chrome e no VS Code (com o nouveau ela trava o PC)"
+  echo "==> GT 420: desligando a aceleração de vídeo no Chrome, no VS Code e nos apps GTK4 (com o nouveau ela trava o PC)"
   if pgrep -x chrome >/dev/null; then
     echo "   ⚠️ Feche os dois Chromes e rode este script de novo para valer neles."
   else
@@ -89,6 +89,7 @@ json.dump(s, open(f, "w"))
 EOF
     done
   fi
+  grep -q GSK_RENDERER ~/.profile || printf '\n# GT 420 + nouveau: apps GTK4 (ex.: Monitor do Sistema) travam a placa de vídeo; desenhar sem GPU\nexport GSK_RENDERER=cairo\n' >> ~/.profile
   [ -f ~/.vscode/argv.json ] && sed -i 's|^\t// "disable-hardware-acceleration": true,|\t"disable-hardware-acceleration": true,|' ~/.vscode/argv.json
 fi
 
