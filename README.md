@@ -32,7 +32,7 @@ Serve de guia caso eu formate ou troque de PC, e de diário dos problemas que j�
    ```bash
    sudo bash ~/dev/linux-setup/instalar-dev.sh
    ```
-5. **Programas que não precisam de senha** (Postman, Flameshot, NormCap, CopyQ, Smile, Node, Jupyter, JetBrains Toolbox, config do Git):
+5. **Programas que não precisam de senha** (Postman, Flameshot, NormCap, CopyQ, Smile, Spotify, Node, Jupyter, JetBrains Toolbox, config do Git):
    ```bash
    bash ~/dev/linux-setup/instalar-usuario.sh
    ```
@@ -41,7 +41,7 @@ Serve de guia caso eu formate ou troque de PC, e de diário dos problemas que j�
    sudo bash ~/dev/linux-setup/ajustar-sistema.sh
    ```
 7. **Passos manuais** (ver a seção abaixo).
-8. **Aplicar as configurações** (barras de tarefas, atalhos, ícones, lançadores, energia; com a GT 420, desliga a aceleração do Chrome e do VS Code). Rodar **com o Chrome fechado**:
+8. **Aplicar as configurações** (barras de tarefas, atalhos, ícones, lançadores, energia; com a GT 420, desliga a aceleração do Chrome, do VS Code e do Spotify). Rodar **com o Chrome e o Spotify fechados**:
    ```bash
    bash ~/dev/linux-setup/aplicar-configuracoes.sh
    ```
@@ -57,6 +57,7 @@ Serve de guia caso eu formate ou troque de PC, e de diário dos problemas que j�
 - **Chrome PUC:** abrir pelo ícone "Chrome PUC" (ou **Ctrl+Alt+P**) e entrar com **`dev.luizarrua@gmail.com`**. Esse Chrome é uma instância separada (`~/.config/chrome-puc`), por isso fica num botão próprio na barra.
 - **Google Agenda:** bloquear as notificações no Chrome Pessoal em `chrome://settings/content/notifications`.
 - **Android Studio:** ao criar um emulador (AVD), em *Emulated Performance → Graphics* escolher **Software**, enquanto a placa for a GT 420.
+- **Spotify:** abrir pelo menu e entrar com a minha conta.
 - **Claude Code:** instalar e logar. No VS Code, instalar a extensão **"Claude Code"**.
 - **Meus repositórios:** clonar todos de volta:
   ```bash
@@ -123,7 +124,7 @@ A GT 420 com nouveau não decodifica vídeo, então o YouTube roda todo no proce
 ### PC congelando inteiro, precisando reiniciar no botão (06/10/2026)
 - **Sintoma:** a tela travava por completo e só voltava reiniciando. Aconteceu 2 vezes seguidas.
 - **Causa:** o Chrome usa a placa de vídeo para desenhar as páginas. Com a GT 420 e o driver nouveau, ele manda comandos que a placa não aguenta, e ela trava. Como ela também desenha a tela toda, o PC inteiro congela. O log mostrava milhares de erros `nouveau ... gr: DATA_ERROR ... chrome[...]` e um `TRAP` logo antes de cada travamento.
-- **Solução:** aceleração de hardware **desligada** nos dois Chromes (`chrome://settings/system` → "Usar aceleração gráfica quando disponível") e no VS Code (`"disable-hardware-acceleration": true` em `~/.vscode/argv.json`, que usa o mesmo motor do Chrome). O `aplicar-configuracoes.sh` já faz isso sozinho se detectar a GT 420.
+- **Solução:** aceleração de hardware **desligada** nos dois Chromes (`chrome://settings/system` → "Usar aceleração gráfica quando disponível") e no VS Code (`"disable-hardware-acceleration": true` em `~/.vscode/argv.json`, que usa o mesmo motor do Chrome). O **Spotify** (instalado em 10/10) também usa esse motor, então fica igual: `ui.hardware_acceleration=false` em `~/.var/app/com.spotify.Client/config/spotify/prefs`, ou no app em Configurações → Compatibilidade. O `aplicar-configuracoes.sh` já faz isso sozinho se detectar a GT 420.
 - **Como conferir se voltou a acontecer:**
   ```bash
   journalctl -b -1 -k | grep -c DATA_ERROR   # erros da placa no boot anterior
@@ -159,7 +160,7 @@ A GT 420 com nouveau não decodifica vídeo, então o YouTube roda todo no proce
 ## 🔜 Quando a RX 580 chegar
 
 1. Trocar a placa e ligar o PC. **Não precisa instalar driver nenhum**: o driver da AMD (`amdgpu`) já vem no kernel e o firmware dela já está instalado.
-2. Religar a aceleração de hardware nos **dois** Chromes (`chrome://settings/system`) e no VS Code (comentar a linha `disable-hardware-acceleration` em `~/.vscode/argv.json`).
+2. Religar a aceleração de hardware nos **dois** Chromes (`chrome://settings/system`), no VS Code (comentar a linha `disable-hardware-acceleration` em `~/.vscode/argv.json`) e no Spotify (Configurações → Compatibilidade).
 3. No Android Studio, voltar o *Graphics* dos emuladores para **Hardware** ou **Automatic**.
 4. Conferir com `glxinfo -B | grep renderer` (deve aparecer AMD/Radeon).
 5. Atualizar a tabela de hardware deste README.
