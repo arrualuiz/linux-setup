@@ -74,7 +74,7 @@ echo "==> Perfil de energia: desempenho"
 powerprofilesctl set performance 2>/dev/null || true
 
 if lspci | grep -q 'GT 420'; then
-  echo "==> GT 420: desligando a aceleração de vídeo no Chrome, no VS Code e nos apps GTK4 (com o nouveau ela trava o PC)"
+  echo "==> GT 420: desligando a aceleração de vídeo no Chrome, no VS Code, no Spotify e nos apps GTK4 (com o nouveau ela trava o PC)"
   if pgrep -x chrome >/dev/null; then
     echo "   ⚠️ Feche os dois Chromes e rode este script de novo para valer neles."
   else
@@ -88,6 +88,14 @@ s["hardware_acceleration_mode"] = {"enabled": False}
 json.dump(s, open(f, "w"))
 EOF
     done
+  fi
+  # Spotify usa o mesmo motor do Chrome; ele regrava o prefs ao fechar, então só com ele fechado
+  p=~/.var/app/com.spotify.Client/config/spotify/prefs
+  if pgrep -x spotify >/dev/null; then
+    echo "   ⚠️ Feche o Spotify e rode este script de novo para valer nele."
+  elif flatpak info --user com.spotify.Client >/dev/null 2>&1; then
+    mkdir -p "${p%/*}"; touch "$p"
+    sed -i '/^ui.hardware_acceleration=/d' "$p"; echo 'ui.hardware_acceleration=false' >> "$p"
   fi
   grep -q GSK_RENDERER ~/.profile || printf '\n# GT 420 + nouveau: apps GTK4 (ex.: Monitor do Sistema) travam a placa de vídeo; desenhar sem GPU\nexport GSK_RENDERER=cairo\n' >> ~/.profile
   [ -f ~/.vscode/argv.json ] && sed -i 's|^\t// "disable-hardware-acceleration": true,|\t"disable-hardware-acceleration": true,|' ~/.vscode/argv.json

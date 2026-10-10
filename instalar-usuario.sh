@@ -7,13 +7,14 @@ echo "==> Flathub (loja de apps Flatpak) para o usuário"
 flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
 echo "==> Apps Flatpak"
-# Postman | Flameshot (print) | NormCap (OCR) | CopyQ (Win+V) | Smile (Win+.)
+# Postman | Flameshot (print) | NormCap (OCR) | CopyQ (Win+V) | Smile (Win+.) | Spotify
 flatpak install --user -y --noninteractive flathub \
   com.getpostman.Postman \
   org.flameshot.Flameshot \
   com.github.dynobo.normcap \
   com.github.hluk.copyq \
-  it.mijorus.smile
+  it.mijorus.smile \
+  com.spotify.Client
 
 echo "==> NormCap: OCR em português + inglês"
 T=~/.var/app/com.github.dynobo.normcap/config/normcap/tessdata
