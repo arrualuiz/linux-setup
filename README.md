@@ -87,7 +87,7 @@ Serve de guia caso eu formate ou troque de PC, e de diário dos problemas que j�
 
 - **Efeitos visuais desligados**, porque a GT 420 é fraca.
 - **Duas barras, uma por monitor**, no estilo Windows 10:
-  - Monitor 1: menu + apps fixados + setinha ^ + rede + som + relógio.
+  - Monitor 1: menu + apps fixados + setinha ^ + rede + som + relógio (duas linhas).
   - Monitor 2: menu + só as janelas abertas nele + relógio.
   - Applet "grouped-window-list" (instância 16 no painel 1, 17 no painel 2), altura 46, ícones 36.
   - **Cada janela tem seu botão** (sem agrupar), mostrando o título da janela.
@@ -98,6 +98,7 @@ Serve de guia caso eu formate ou troque de PC, e de diário dos problemas que j�
   - Pra esconder outro applet: Configurações do sistema → Applets (ou botão direito na barra → "Modo de edição") e arrastar o applet pra esquerda da setinha. O que fica à direita dela não é escondido.
   - ⚠️ Não usar a opção "Restore as hidden" desse applet: com ela, a setinha mostra e esconde na mesma hora (e recarregar o applet com ela ligada travou num loop).
   - Se um HD/pendrive for montado com a setinha fechada, o ícone dele aparece sozinho (o próprio applet de unidades se mostra) e some quando a unidade é desmontada. Enquanto ele estiver à vista, a setinha inverte: mostra os outros e esconde ele.
+- **Relógio em duas linhas, igual ao Windows** (hora em cima, data `12/10/2026` embaixo), nos dois monitores. Applet calendário, instâncias 13 (monitor 1) e 20 (monitor 2), com formato personalizado `%H:%M%n%d/%m/%Y` (`%n` quebra a linha). Passando o mouse aparece a data por extenso. Arquivos em `configs/cinnamon/relogio/`. Pra mudar: botão direito no relógio → Configurar.
 - **Apps fixados no monitor 1:** Terminal, Chrome Pessoal, Chrome PUC, Jupyter Lab, VS Code, IntelliJ, PyCharm, Android Studio, DBeaver.
 
 ---
@@ -209,7 +210,7 @@ A GT 420 com nouveau não decodifica vídeo, então o YouTube roda todo no proce
 | `instalar-usuario.sh` | Flatpaks, Node, Jupyter, Toolbox, Git (sem senha) |
 | `ajustar-sistema.sh` | Boot (GRUB), nome do PC, swap, remoção de sobras de notebook (precisa de `sudo`) |
 | `aplicar-configuracoes.sh` | Barras, Pomodoro, setinha da bandeja, atalhos, ícones, lançadores, som, energia, aceleração de vídeo |
-| `configs/cinnamon/` | Barras de tarefas (16/17.json), painéis, atalhos (`atalhos.dconf`), setinha da bandeja (`setinha/`) |
+| `configs/cinnamon/` | Barras de tarefas (16/17.json), painéis, atalhos (`atalhos.dconf`), setinha da bandeja (`setinha/`), relógio (`relogio/`) |
 | `configs/aplicativos/` + `configs/icones/` | Lançadores do Chrome Pessoal/PUC e do Jupyter |
 | `configs/wireplumber/` | Nomes amigáveis do som (só serve com o mesmo hardware) |
 | `configs/autostart/` | CopyQ abrindo junto com o sistema |
