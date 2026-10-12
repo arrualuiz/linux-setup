@@ -123,6 +123,11 @@ A GT 420 com nouveau não decodifica vídeo, então o YouTube roda todo no proce
 
 ## 🩺 Problemas que já resolvi
 
+### Chrome abrindo num botão separado do "Chrome Arrua" na barra (11/10/2026)
+- **Sintoma:** clicava no "Chrome Arrua" fixado e a janela aparecia num botão novo do lado, em vez de ocupar o próprio atalho (no Windows 10 isso não acontecia).
+- **Causa:** o sistema tem dois atalhos próprios do Chrome (`google-chrome.desktop` e `com.google.Chrome.desktop`) que também dizem "sou a janela `google-chrome`". O Cinnamon ligava as janelas a eles, não ao meu atalho.
+- **Solução:** esconder os dois com cópias `Hidden=true` em `~/.local/share/applications/` e deixar o `chrome-pessoal.desktop` como navegador padrão. Depois reiniciar o Cinnamon (Ctrl+Alt+Esc).
+
 ### PC congelando inteiro, precisando reiniciar no botão (06/10/2026)
 - **Sintoma:** a tela travava por completo e só voltava reiniciando. Aconteceu 2 vezes seguidas.
 - **Causa:** o Chrome usa a placa de vídeo para desenhar as páginas. Com a GT 420 e o driver nouveau, ele manda comandos que a placa não aguenta, e ela trava. Como ela também desenha a tela toda, o PC inteiro congela. O log mostrava milhares de erros `nouveau ... gr: DATA_ERROR ... chrome[...]` e um `TRAP` logo antes de cada travamento.

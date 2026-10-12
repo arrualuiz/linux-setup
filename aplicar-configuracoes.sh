@@ -19,6 +19,11 @@ mkdir -p $A ~/.local/share/icons/chrome-perfis
 cp $C/icones/*.png ~/.local/share/icons/chrome-perfis/
 cp $C/aplicativos/*.desktop $A/
 update-desktop-database $A 2>/dev/null || true
+# google-chrome.desktop e com.google.Chrome.desktop (Hidden=true) escondem os atalhos do sistema,
+# senão a barra liga as janelas do Chrome a eles e não ao "Chrome Arrua" fixado.
+for t in text/html x-scheme-handler/http x-scheme-handler/https x-scheme-handler/about x-scheme-handler/unknown; do
+  xdg-mime default chrome-pessoal.desktop $t
+done
 
 echo "==> Ícones na área de trabalho (só no monitor principal)"
 gsettings set org.nemo.desktop desktop-layout 'true::false'
