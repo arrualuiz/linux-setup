@@ -87,13 +87,17 @@ Serve de guia caso eu formate ou troque de PC, e de diário dos problemas que j�
 
 - **Efeitos visuais desligados**, porque a GT 420 é fraca.
 - **Duas barras, uma por monitor**, no estilo Windows 10:
-  - Monitor 1: menu + apps fixados + bandeja do sistema + Pomodoro + relógio.
+  - Monitor 1: menu + apps fixados + setinha ^ + rede + som + relógio.
   - Monitor 2: menu + só as janelas abertas nele + relógio.
   - Applet "grouped-window-list" (instância 16 no painel 1, 17 no painel 2), altura 46, ícones 36.
   - **Cada janela tem seu botão** (sem agrupar), mostrando o título da janela.
 - **Ícones da área de trabalho** só no monitor principal, e **livres pra arrastar** ("Organizar automaticamente" desligado, mas encaixando na grade). Fica em `~/.config/nemo/desktop-metadata`. Pra ligar/desligar na mão: botão direito na área de trabalho.
 - **Correção da barra (Cinnamon 6.x):** havia um bug em que app fixado, ao abrir, aparecia só como ícone com o traço azul, sem o nome. Corrigi numa cópia do applet em `~/.local/share/cinnamon/applets/grouped-window-list@cinnamon.org/` (que tem prioridade sobre a do sistema). A mudança está em `configs/cinnamon/correcao-barra/appGroup.patch`. Para reaplicar: copiar `/usr/share/cinnamon/applets/grouped-window-list@cinnamon.org` para essa pasta, aplicar o patch e **reiniciar o Cinnamon** (Ctrl+Alt+Esc), porque só recarregar o applet não basta. ⚠️ Essa cópia não recebe as atualizações do Cinnamon. Se a barra der problema depois de uma atualização, apagar a pasta e reiniciar o Cinnamon.
-- **Pomodoro** do lado do relógio (applet "Cronômetro Pomodoro", `pomodoro@gregfreeman.org`, da loja do Cinnamon). Mostra `ciclos feitos · tempo que falta`. Clicar abre o menu: a chave liga/pausa, e dá pra zerar ou pular pra próxima etapa. Padrão: 25 min de foco, 5 de pausa e 15 de pausa longa a cada 4 ciclos (mudar em botão direito → Configurar). O som de aviso precisa do `sox` (já está no `instalar-dev.sh`). Sem ele, só aparece a janelinha de aviso.
+- **Pomodoro** (fica escondido na setinha ^, ver abaixo; applet "Cronômetro Pomodoro", `pomodoro@gregfreeman.org`, da loja do Cinnamon). Mostra `ciclos feitos · tempo que falta`. Clicar abre o menu: a chave liga/pausa, e dá pra zerar ou pular pra próxima etapa. Padrão: 25 min de foco, 5 de pausa e 15 de pausa longa a cada 4 ciclos (mudar em botão direito → Configurar). O som de aviso precisa do `sox` (já está no `instalar-dev.sh`). Sem ele, só aparece a janelinha de aviso.
+- **Setinha ^ do lado do relógio (igual ao Windows):** esconde os ícones que ficam à esquerda dela (CopyQ/tesourinha, JetBrains Toolbox, atualizações, HD/SSD conectado e o Pomodoro). Clicar na setinha mostra, clicar de novo esconde. Ficam sempre à vista só rede, som e relógio. É o applet "Hideable applets" (`hideable-applets@cardsurf`, da loja do Cinnamon), no modo "Alternar visibilidade", lado "Esquerda". Ele lembra o que está escondido em `~/.local/share/cinnamon/applets/hideable-applets@cardsurf/values/last_values.csv` (cópia em `configs/cinnamon/setinha/`). O Pomodoro continua contando escondido, e o **Super + Shift + P** abre o menu dele normalmente.
+  - Pra esconder outro applet: Configurações do sistema → Applets (ou botão direito na barra → "Modo de edição") e arrastar o applet pra esquerda da setinha. O que fica à direita dela não é escondido.
+  - ⚠️ Não usar a opção "Restore as hidden" desse applet: com ela, a setinha mostra e esconde na mesma hora (e recarregar o applet com ela ligada travou num loop).
+  - Se um HD/pendrive for montado com a setinha fechada, o ícone dele aparece sozinho (o próprio applet de unidades se mostra) e some quando a unidade é desmontada. Enquanto ele estiver à vista, a setinha inverte: mostra os outros e esconde ele.
 - **Apps fixados no monitor 1:** Terminal, Chrome Pessoal, Chrome PUC, Jupyter Lab, VS Code, IntelliJ, PyCharm, Android Studio, DBeaver.
 
 ---
@@ -204,8 +208,8 @@ A GT 420 com nouveau não decodifica vídeo, então o YouTube roda todo no proce
 | `instalar-dev.sh` | Programas via apt (precisa de `sudo`) |
 | `instalar-usuario.sh` | Flatpaks, Node, Jupyter, Toolbox, Git (sem senha) |
 | `ajustar-sistema.sh` | Boot (GRUB), nome do PC, swap, remoção de sobras de notebook (precisa de `sudo`) |
-| `aplicar-configuracoes.sh` | Barras, Pomodoro, atalhos, ícones, lançadores, som, energia, aceleração de vídeo |
-| `configs/cinnamon/` | Barras de tarefas (16/17.json), painéis, atalhos (`atalhos.dconf`) |
+| `aplicar-configuracoes.sh` | Barras, Pomodoro, setinha da bandeja, atalhos, ícones, lançadores, som, energia, aceleração de vídeo |
+| `configs/cinnamon/` | Barras de tarefas (16/17.json), painéis, atalhos (`atalhos.dconf`), setinha da bandeja (`setinha/`) |
 | `configs/aplicativos/` + `configs/icones/` | Lançadores do Chrome Pessoal/PUC e do Jupyter |
 | `configs/wireplumber/` | Nomes amigáveis do som (só serve com o mesmo hardware) |
 | `configs/autostart/` | CopyQ abrindo junto com o sistema |

@@ -57,6 +57,17 @@ if [ ! -d ~/.local/share/cinnamon/applets/pomodoro@gregfreeman.org ]; then
   rm -rf $t
 fi
 
+echo "==> Setinha da bandeja (igual ao Windows): esconde CopyQ, Toolbox, Pomodoro etc."
+if [ ! -d ~/.local/share/cinnamon/applets/hideable-applets@cardsurf ]; then
+  t=$(mktemp -d)
+  curl -fsSL -o $t/h.zip https://cinnamon-spices.linuxmint.com/files/applets/hideable-applets@cardsurf.zip \
+    && unzip -q $t/h.zip -d $t && cinnamon-install-spice applet $t/hideable-applets@cardsurf
+  rm -rf $t
+fi
+mkdir -p ~/.config/cinnamon/spices/hideable-applets@cardsurf ~/.local/share/cinnamon/applets/hideable-applets@cardsurf/values
+cp $C/cinnamon/setinha/hideable-applets@cardsurf.json ~/.config/cinnamon/spices/hideable-applets@cardsurf/
+cp $C/cinnamon/setinha/last_values.csv ~/.local/share/cinnamon/applets/hideable-applets@cardsurf/values/
+
 echo "==> Barras de tarefas: uma por monitor, botões separados por janela"
 d=~/.config/cinnamon/spices/grouped-window-list@cinnamon.org
 mkdir -p $d
