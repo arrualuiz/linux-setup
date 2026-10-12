@@ -64,6 +64,8 @@ cp $C/cinnamon/16.json $C/cinnamon/17.json $d/
 while IFS='=' read -r k v; do gsettings set org.cinnamon "$k" "$v"; done < $C/cinnamon/paineis.txt
 
 echo "==> Atalhos de teclado (Print, Shift+Print, Super+V, Super+., Super+Tab, Ctrl+Alt+P)"
+# Scripts dos atalhos (ex.: smile-auto-fechar no Win+.)
+mkdir -p ~/.local/bin && cp $C/bin/* ~/.local/bin/ && chmod +x ~/.local/bin/*
 dconf load /org/cinnamon/desktop/keybindings/ < $C/cinnamon/atalhos.dconf
 # o Super+. era do seletor de emoji do ibus; fica só o Super+;
 gsettings set org.freedesktop.ibus.panel.emoji hotkey "['<Super>semicolon']" 2>/dev/null || true

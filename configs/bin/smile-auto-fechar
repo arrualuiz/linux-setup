@@ -1,0 +1,18 @@
+#!/bin/bash
+# Win+. abre o Smile; fecha sozinho quando ele perde o foco. Se já estiver aberto, fecha (liga/desliga).
+janela() { wmctrl -lx | awk 'tolower($3) ~ /smile/ {print $1; exit}'; }
+ativa() { printf '%d' "$(xprop -root _NET_ACTIVE_WINDOW | grep -o '0x[0-9a-f]*')"; }
+
+w=$(janela)
+if [ -n "$w" ]; then wmctrl -ic "$w"; exit; fi
+
+flatpak run it.mijorus.smile &
+for _ in $(seq 50); do w=$(janela); [ -n "$w" ] && break; sleep 0.1; done
+[ -z "$w" ] && exit
+id=$(printf '%d' "$w")
+wmctrl -ia "$w"  # traz pra frente com foco
+for _ in $(seq 20); do [ "$(ativa)" = "$id" ] && break; sleep 0.1; done  # espera ganhar o foco
+while [ "$(janela)" = "$w" ]; do
+  [ "$(ativa)" != "$id" ] && { wmctrl -ic "$w"; exit; }
+  sleep 0.3
+done

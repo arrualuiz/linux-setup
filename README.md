@@ -74,7 +74,7 @@ Serve de guia caso eu formate ou troque de PC, e de diário dos problemas que j�
 | **Print** | Captura de tela (seleciona área, copia/salva/desenha) | Flameshot |
 | **Shift + Print** | Copia o **texto** da tela (OCR, pt + en) | NormCap |
 | **Super + V** | Histórico da área de transferência | CopyQ |
-| **Super + .** | Emojis | Smile |
+| **Super + .** | Emojis (fecha sozinho se clicar fora; apertar de novo fecha) | Smile via `smile-auto-fechar` |
 | **Super + Tab** | Todas as janelas e espaços de trabalho | Expo (do Cinnamon) |
 | **Ctrl + Alt + ↓** | Todas as janelas do espaço atual | Scale (do Cinnamon) |
 | **Ctrl + Alt + ← / →** | Troca de espaço de trabalho | Cinnamon |

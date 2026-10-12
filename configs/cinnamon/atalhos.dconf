@@ -23,7 +23,7 @@ name='Histórico da área de transferência (CopyQ)'
 
 [custom-keybindings/custom4]
 binding=['<Super>period']
-command='flatpak run it.mijorus.smile'
+command='smile-auto-fechar'
 name='Emojis (Smile)'
 
 [media-keys]
