@@ -79,6 +79,7 @@ Serve de guia caso eu formate ou troque de PC, e de diário dos problemas que j�
 | **Ctrl + Alt + ↓** | Todas as janelas do espaço atual | Scale (do Cinnamon) |
 | **Ctrl + Alt + ← / →** | Troca de espaço de trabalho | Cinnamon |
 | **Ctrl + Alt + P** | Abre o Chrome da PUC | — |
+| **Super + Shift + P** | Menu do Pomodoro | Pomodoro (applet) |
 
 ---
 
@@ -86,12 +87,13 @@ Serve de guia caso eu formate ou troque de PC, e de diário dos problemas que j�
 
 - **Efeitos visuais desligados**, porque a GT 420 é fraca.
 - **Duas barras, uma por monitor**, no estilo Windows 10:
-  - Monitor 1: menu + apps fixados + bandeja do sistema + relógio.
+  - Monitor 1: menu + apps fixados + bandeja do sistema + Pomodoro + relógio.
   - Monitor 2: menu + só as janelas abertas nele + relógio.
   - Applet "grouped-window-list" (instância 16 no painel 1, 17 no painel 2), altura 46, ícones 36.
   - **Cada janela tem seu botão** (sem agrupar), mostrando o título da janela.
 - **Ícones da área de trabalho** só no monitor principal, e **livres pra arrastar** ("Organizar automaticamente" desligado, mas encaixando na grade). Fica em `~/.config/nemo/desktop-metadata`. Pra ligar/desligar na mão: botão direito na área de trabalho.
 - **Correção da barra (Cinnamon 6.x):** havia um bug em que app fixado, ao abrir, aparecia só como ícone com o traço azul, sem o nome. Corrigi numa cópia do applet em `~/.local/share/cinnamon/applets/grouped-window-list@cinnamon.org/` (que tem prioridade sobre a do sistema). A mudança está em `configs/cinnamon/correcao-barra/appGroup.patch`. Para reaplicar: copiar `/usr/share/cinnamon/applets/grouped-window-list@cinnamon.org` para essa pasta, aplicar o patch e **reiniciar o Cinnamon** (Ctrl+Alt+Esc), porque só recarregar o applet não basta. ⚠️ Essa cópia não recebe as atualizações do Cinnamon. Se a barra der problema depois de uma atualização, apagar a pasta e reiniciar o Cinnamon.
+- **Pomodoro** do lado do relógio (applet "Cronômetro Pomodoro", `pomodoro@gregfreeman.org`, da loja do Cinnamon). Mostra `ciclos feitos · tempo que falta`. Clicar abre o menu: a chave liga/pausa, e dá pra zerar ou pular pra próxima etapa. Padrão: 25 min de foco, 5 de pausa e 15 de pausa longa a cada 4 ciclos (mudar em botão direito → Configurar). O som de aviso precisa do `sox` (já está no `instalar-dev.sh`). Sem ele, só aparece a janelinha de aviso.
 - **Apps fixados no monitor 1:** Terminal, Chrome Pessoal, Chrome PUC, Jupyter Lab, VS Code, IntelliJ, PyCharm, Android Studio, DBeaver.
 
 ---
@@ -197,7 +199,7 @@ A GT 420 com nouveau não decodifica vídeo, então o YouTube roda todo no proce
 | `instalar-dev.sh` | Programas via apt (precisa de `sudo`) |
 | `instalar-usuario.sh` | Flatpaks, Node, Jupyter, Toolbox, Git (sem senha) |
 | `ajustar-sistema.sh` | Boot (GRUB), nome do PC, swap, remoção de sobras de notebook (precisa de `sudo`) |
-| `aplicar-configuracoes.sh` | Barras, atalhos, ícones, lançadores, som, energia, aceleração de vídeo |
+| `aplicar-configuracoes.sh` | Barras, Pomodoro, atalhos, ícones, lançadores, som, energia, aceleração de vídeo |
 | `configs/cinnamon/` | Barras de tarefas (16/17.json), painéis, atalhos (`atalhos.dconf`) |
 | `configs/aplicativos/` + `configs/icones/` | Lançadores do Chrome Pessoal/PUC e do Jupyter |
 | `configs/wireplumber/` | Nomes amigáveis do som (só serve com o mesmo hardware) |

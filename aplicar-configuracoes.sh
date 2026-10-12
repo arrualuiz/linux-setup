@@ -44,6 +44,14 @@ if pkill -9 -x nemo-desktop; then
   sleep 2; pgrep -x nemo-desktop >/dev/null || (setsid nemo-desktop >/dev/null 2>&1 &)
 fi
 
+echo "==> Pomodoro (applet da loja do Cinnamon), do lado do relógio no monitor 1"
+if [ ! -d ~/.local/share/cinnamon/applets/pomodoro@gregfreeman.org ]; then
+  t=$(mktemp -d)
+  curl -fsSL -o $t/p.zip https://cinnamon-spices.linuxmint.com/files/applets/pomodoro@gregfreeman.org.zip \
+    && unzip -q $t/p.zip -d $t && cinnamon-install-spice applet $t/pomodoro@gregfreeman.org
+  rm -rf $t
+fi
+
 echo "==> Barras de tarefas: uma por monitor, botões separados por janela"
 d=~/.config/cinnamon/spices/grouped-window-list@cinnamon.org
 mkdir -p $d

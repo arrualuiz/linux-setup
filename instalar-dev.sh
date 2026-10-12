@@ -10,10 +10,10 @@ USUARIO="${SUDO_USER:-arrua}"
 KEYS=/etc/apt/keyrings
 install -d -m 0755 "$KEYS"
 
-echo "==> Pacotes básicos"
+echo "==> Pacotes básicos (sox = som do Pomodoro)"
 apt-get update
 apt-get install -y ca-certificates curl gnupg apt-transport-https \
-  git build-essential python3-pip python3-venv pipx openjdk-21-jdk
+  git build-essential python3-pip python3-venv pipx openjdk-21-jdk sox
 
 echo "==> Repositório do VS Code (Microsoft)"
 curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor --yes -o "$KEYS/packages.microsoft.gpg"
