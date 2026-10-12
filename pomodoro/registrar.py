@@ -7,8 +7,10 @@ e o nome do link diz qual pausa vem depois:
   pomodoro-pausa-curta  e  pomodoro-pausa-longa
 
 Uso manual:
-  registrar.py --enviar   só reenvia o que ficou pendente (ex.: estava sem internet)
-  registrar.py --testar   confere se a planilha responde (não grava nada)
+  registrar.py --codigo     copia o código da planilha (planilha.gs) já com o token
+  registrar.py --url LINK   guarda o link do app da Web, testa e envia o pendente
+  registrar.py --enviar     só reenvia o que ficou pendente (ex.: estava sem internet)
+  registrar.py --testar     confere se a planilha responde (não grava nada)
 """
 import csv
 import datetime
@@ -101,6 +103,35 @@ def chamar_planilha(linhas):
         return json.load(r)
 
 
+def copiar_codigo():
+    """planilha.gs com o token deste PC, direto na área de transferência (CopyQ)."""
+    token = json.load(open(CONFIG))["token"]
+    codigo = (Path(__file__).resolve().parent / "planilha.gs").read_text().replace("COLE_O_TOKEN_AQUI", token)
+    copyq = ["flatpak", "run", "--command=copyq", "com.github.hluk.copyq", "copy", "text/plain", "-"]
+    if subprocess.run(copyq, input=codigo, text=True, capture_output=True).returncode == 0:
+        print("Código copiado! É só colar (Ctrl+V) no editor do Apps Script.")
+    else:
+        print(codigo)
+
+
+def guardar_url(url):
+    cfg = json.load(open(CONFIG))
+    cfg["url"] = url.strip()
+    CONFIG.write_text(json.dumps(cfg, indent=2) + "\n")
+    print("Teste:", chamar_planilha([]))
+    print("Pendentes:", enviar() or "nada pendente")
+
+
+def criar_config():
+    """Gera o token na primeira vez (o link entra depois, com --url)."""
+    if CONFIG.exists():
+        return
+    import secrets
+    CONFIG.parent.mkdir(parents=True, exist_ok=True)
+    CONFIG.write_text(json.dumps({"url": "", "token": secrets.token_urlsafe(24)}, indent=2) + "\n")
+    CONFIG.chmod(0o600)
+
+
 def registrar(pausa):
     fim = datetime.datetime.now().astimezone().replace(microsecond=0)
     minutos = minutos_do_pomodoro()
@@ -129,8 +160,13 @@ def registrar(pausa):
 
 
 def main():
+    criar_config()
     try:
-        if "--testar" in sys.argv:
+        if "--codigo" in sys.argv:
+            copiar_codigo()
+        elif "--url" in sys.argv:
+            guardar_url(sys.argv[sys.argv.index("--url") + 1])
+        elif "--testar" in sys.argv:
             print(chamar_planilha([]))
         elif "--enviar" in sys.argv:
             print(enviar() or "nada pendente (ou planilha não configurada)")
