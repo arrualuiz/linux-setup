@@ -124,9 +124,17 @@ powerprofilesctl get                                        # performance
 
 A GT 420 com nouveau não decodifica vídeo, então o YouTube roda todo no processador. A extensão **enhanced-h264ify** (Chrome Pessoal) bloqueia os formatos pesados (VP8, VP9, AV1) e os vídeos a 60 fps, e o YouTube cai para **H.264 até 1080p 30 fps**, que é o mais leve. Se quiser vídeo a 60 fps, desmarcar "Block 60fps" nas opções da extensão; o Xeon aguenta, só usa mais CPU.
 
+Filmes do PC abrem no **mpv** (`io.mpv.Mpv`, Flatpak), não no Celluloid. A configuração (`configs/mpv/mpv.conf`) manda o processador decodificar (`hwdec=no`) e mostra a imagem com `vo=xv`, o caminho mais leve. Atalhos do mpv: **espaço** pausa, **duplo clique** ou **F** põe em tela cheia, **setas** voltam e avançam, **#** troca o áudio, **J** troca a legenda e **V** liga ou desliga a legenda.
+
 ---
 
 ## 🩺 Problemas que já resolvi
+
+### Filme 1080p travando no Celluloid (13/10/2026)
+- **Sintoma:** filme 1080p (H.264) engasgando no player padrão do Mint (Celluloid).
+- **Não era falta de placa de vídeo:** o Xeon decodificou o mesmo filme a ~750 quadros por segundo, e o filme só precisa de 24.
+- **Causa provável:** o Celluloid é um app GTK4. Com o `GSK_RENDERER=cairo` (que impede os travamentos da GT 420), cada quadro sai da placa de vídeo e é redesenhado pelo processador. Além disso, o `hwdec=yes` dele tenta usar o decodificador da GT 420, que não funciona no nouveau (`msvld: unable to load firmware data` no `journalctl -k`).
+- **Solução:** mpv (Flatpak) com `vo=xv` e `hwdec=no`, como player padrão. Teste em tela cheia nos dois monitores: 0 quadros perdidos. Para voltar ao Celluloid: botão direito no vídeo → Abrir com → Celluloid → "definir como padrão".
 
 ### Chrome abrindo num botão separado do "Chrome Arrua" na barra (11/10/2026)
 - **Sintoma:** clicava no "Chrome Arrua" fixado e a janela aparecia num botão novo do lado, em vez de ocupar o próprio atalho (no Windows 10 isso não acontecia).
@@ -173,9 +181,10 @@ A GT 420 com nouveau não decodifica vídeo, então o YouTube roda todo no proce
 
 1. Trocar a placa e ligar o PC. **Não precisa instalar driver nenhum**: o driver da AMD (`amdgpu`) já vem no kernel e o firmware dela já está instalado.
 2. Religar a aceleração de hardware nos **dois** Chromes (`chrome://settings/system`), no VS Code (comentar a linha `disable-hardware-acceleration` em `~/.vscode/argv.json`) e no Spotify (Configurações → Compatibilidade).
-3. No Android Studio, voltar o *Graphics* dos emuladores para **Hardware** ou **Automatic**.
-4. Conferir com `glxinfo -B | grep renderer` (deve aparecer AMD/Radeon).
-5. Atualizar a tabela de hardware deste README.
+3. Se quiser voltar ao Celluloid, tirar o `GSK_RENDERER=cairo` do `~/.profile`. O mpv pode trocar `vo=xv` por `vo=gpu` e `hwdec=no` por `hwdec=vaapi` em `~/.var/app/io.mpv.Mpv/config/mpv/mpv.conf`.
+4. No Android Studio, voltar o *Graphics* dos emuladores para **Hardware** ou **Automatic**.
+5. Conferir com `glxinfo -B | grep renderer` (deve aparecer AMD/Radeon).
+6. Atualizar a tabela de hardware deste README.
 
 ---
 

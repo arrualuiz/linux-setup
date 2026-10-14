@@ -86,6 +86,12 @@ dconf load /org/cinnamon/desktop/keybindings/ < $C/cinnamon/atalhos.dconf
 # o Super+. era do seletor de emoji do ibus; fica só o Super+;
 gsettings set org.freedesktop.ibus.panel.emoji hotkey "['<Super>semicolon']" 2>/dev/null || true
 
+echo "==> mpv como player de vídeo padrão (o Celluloid trava os filmes com a GT 420)"
+mkdir -p ~/.var/app/io.mpv.Mpv/config/mpv
+cp $C/mpv/mpv.conf ~/.var/app/io.mpv.Mpv/config/mpv/
+xdg-mime default io.mpv.Mpv.desktop video/x-matroska video/mp4 video/x-msvideo video/webm video/quicktime \
+  video/mpeg video/x-flv video/x-ms-wmv video/mp2t video/x-m4v video/3gpp
+
 echo "==> CopyQ abrindo junto com o sistema"
 mkdir -p ~/.config/autostart
 cp $C/autostart/copyq.desktop ~/.config/autostart/
