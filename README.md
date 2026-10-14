@@ -58,7 +58,6 @@ Serve de guia caso eu formate ou troque de PC, e de diário dos problemas que j�
 - **Google Agenda:** bloquear as notificações no Chrome Pessoal em `chrome://settings/content/notifications`.
 - **Android Studio:** ao criar um emulador (AVD), em *Emulated Performance → Graphics* escolher **Software**, enquanto a placa for a GT 420.
 - **Spotify:** abrir pelo menu e entrar com a minha conta.
-- **Claude Code:** instalar e logar. No VS Code, instalar a extensão **"Claude Code"**.
 - **Meus repositórios:** clonar todos de volta:
   ```bash
   mkdir -p ~/dev/projetos && cd ~/dev/projetos
@@ -196,20 +195,12 @@ Filmes do PC abrem no **mpv** (`io.mpv.Mpv`, Flatpak), não no Celluloid. A conf
 ~/dev/
 ├── projetos/            ← repositórios do GitHub (git pull antes, git push depois)
 ├── faculdade/pucpr/ads/ ← <N>-periodo/<materia>/ com revisao-<materia>.md, PDFs, xlsx...
-│   └── instrucoes-revisao.md  ← meu método de revisão Claude + NotebookLM
+│   └── instrucoes-revisao.md  ← meu método de revisão para as provas
 └── linux-setup/         ← esta pasta
 ```
 
 - Atalho **"Faculdade"** na área de trabalho → `~/dev/faculdade/pucpr/ads`.
 - **Pendente:** trazer o resto do antigo `C:\dev` (~5 GB) do HD externo, sem `node_modules`, e sincronizar a pasta da faculdade com o **Google Drive via rclone**, ignorando `node_modules`, `.venv` etc.
-
----
-
-## 🤖 Claude Code
-
-- Abrir com `claude` no terminal. As conversas ficam **por pasta**: `claude -c` continua a última e `claude -r` lista as antigas.
-- Para coisas do sistema, abrir na pasta pessoal (`~`). É lá que fica a memória sobre este PC.
-- A memória fica em `~/.claude/projects/-home-arrua/memory/` e **não vai para este repositório** (ele é público e a memória tem dados pessoais). Numa reinstalação, copiar essa pasta junto com o backup pessoal.
 
 ---
 
