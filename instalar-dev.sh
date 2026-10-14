@@ -42,7 +42,8 @@ echo "deb [signed-by=$KEYS/dbeaver.gpg] https://dbeaver.io/debs/dbeaver-ce /" > 
 
 echo "==> Instalando programas"
 apt-get update
-apt-get install -y code sublime-text gh dbeaver-ce \
+# qbittorrent: vem do repositório normal do Ubuntu, sem repositório extra
+apt-get install -y code sublime-text gh dbeaver-ce qbittorrent \
   docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
 echo "==> Permitindo usar Docker sem sudo e o emulador Android (KVM)"

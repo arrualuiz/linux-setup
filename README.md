@@ -28,7 +28,7 @@ Serve de guia caso eu formate ou troque de PC, e de diário dos problemas que j�
    ```bash
    git clone https://github.com/arrualuiz/linux-setup.git ~/dev/linux-setup
    ```
-4. **Programas que precisam de senha** (VS Code, Sublime, Git, GitHub CLI, Docker, DBeaver, Java 21):
+4. **Programas que precisam de senha** (VS Code, Sublime, Git, GitHub CLI, Docker, DBeaver, Java 21, qBittorrent):
    ```bash
    sudo bash ~/dev/linux-setup/instalar-dev.sh
    ```
@@ -123,6 +123,8 @@ powerprofilesctl get                                        # performance
 ### 🎬 Vídeo sem placa de vídeo decente
 
 A GT 420 com nouveau não decodifica vídeo, então o YouTube roda todo no processador. A extensão **enhanced-h264ify** (Chrome Pessoal) bloqueia os formatos pesados (VP8, VP9, AV1) e os vídeos a 60 fps, e o YouTube cai para **H.264 até 1080p 30 fps**, que é o mais leve. Se quiser vídeo a 60 fps, desmarcar "Block 60fps" nas opções da extensão; o Xeon aguenta, só usa mais CPU.
+
+Os filmes eu baixo com o **qBittorrent** (versão 4.6.3), instalado em 13/10/2026 com `sudo apt install qbittorrent`. Ele vem do repositório normal do Ubuntu 24.04 (*noble*), que é a base do Mint 22.3, então não precisou de repositório extra. No `instalar-dev.sh` ele já está junto dos outros programas.
 
 Filmes do PC abrem no **mpv** (`io.mpv.Mpv`, Flatpak), não no Celluloid. A configuração (`configs/mpv/mpv.conf`) manda o processador decodificar (`hwdec=no`) e mostra a imagem com `vo=xv`, o caminho mais leve. Atalhos do mpv: **espaço** pausa, **duplo clique** ou **F** põe em tela cheia, **setas** voltam e avançam, **#** troca o áudio, **J** troca a legenda e **V** liga ou desliga a legenda.
 
