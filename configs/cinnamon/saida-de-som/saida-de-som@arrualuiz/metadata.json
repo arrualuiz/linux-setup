@@ -1,0 +1,7 @@
+{
+  "uuid": "saida-de-som@arrualuiz",
+  "name": "Saída de som (fone ↔ caixa)",
+  "description": "Um clique troca a saída de som entre o fone e a caixa. O ícone mostra qual está tocando.",
+  "icon": "xsi-audio-headphones-symbolic",
+  "max-instances": -1
+}

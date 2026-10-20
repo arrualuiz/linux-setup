@@ -68,7 +68,12 @@ mkdir -p ~/.config/cinnamon/spices/hideable-applets@cardsurf ~/.local/share/cinn
 cp $C/cinnamon/setinha/hideable-applets@cardsurf.json ~/.config/cinnamon/spices/hideable-applets@cardsurf/
 cp $C/cinnamon/setinha/last_values.csv ~/.local/share/cinnamon/applets/hideable-applets@cardsurf/values/
 
-echo "==> Barras de tarefas: uma por monitor, botões separados por janela"
+echo "==> Saída de som: um clique (ou Super+Ctrl+V) troca entre o fone e a caixa"
+# Applet que eu fiz, fica nas duas barras do lado do volume (paineis.txt)
+mkdir -p ~/.local/share/cinnamon/applets
+cp -r $C/cinnamon/saida-de-som/saida-de-som@arrualuiz ~/.local/share/cinnamon/applets/
+
+echo "==> Barras de tarefas: uma por monitor, botões separados por janela, volume nas duas"
 d=~/.config/cinnamon/spices/grouped-window-list@cinnamon.org
 mkdir -p $d
 cp $C/cinnamon/16.json $C/cinnamon/17.json $d/

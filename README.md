@@ -79,6 +79,8 @@ Serve de guia caso eu formate ou troque de PC, e de diário dos problemas que j�
 | **Ctrl + Alt + ← / →** | Troca de espaço de trabalho | Cinnamon |
 | **Ctrl + Alt + P** | Abre o Chrome da PUC | — |
 | **Super + Shift + P** | Menu do Pomodoro | Pomodoro (applet) |
+| **Super + Ctrl + V** | Troca a saída de som entre o fone e a caixa (igual ao Windows 11) | Saída de som (applet meu) |
+| **Super + Shift + S** | Abre o menu do volume do monitor onde estou | Som (do Cinnamon) |
 
 ---
 
@@ -86,8 +88,8 @@ Serve de guia caso eu formate ou troque de PC, e de diário dos problemas que j�
 
 - **Efeitos visuais desligados**, porque a GT 420 é fraca.
 - **Duas barras, uma por monitor**, no estilo Windows 10:
-  - Monitor 1: menu + apps fixados + setinha ^ + rede + som + relógio (duas linhas).
-  - Monitor 2: menu + só as janelas abertas nele + relógio.
+  - Monitor 1: menu + apps fixados + setinha ^ + rede + saída de som 🎧/🔊 + volume + relógio (duas linhas).
+  - Monitor 2: menu + só as janelas abertas nele + saída de som 🎧/🔊 + volume + relógio.
   - Applet "grouped-window-list" (instância 16 no painel 1, 17 no painel 2), altura 46, ícones 36.
   - **Cada janela tem seu botão** (sem agrupar), mostrando o título da janela.
 - **Ícones da área de trabalho** só no monitor principal, e **livres pra arrastar** ("Organizar automaticamente" desligado, mas encaixando na grade). Fica em `~/.config/nemo/desktop-metadata`. Pra ligar/desligar na mão: botão direito na área de trabalho.
@@ -98,6 +100,8 @@ Serve de guia caso eu formate ou troque de PC, e de diário dos problemas que j�
   - ⚠️ Não usar a opção "Restore as hidden" desse applet: com ela, a setinha mostra e esconde na mesma hora (e recarregar o applet com ela ligada travou num loop).
   - Se um HD/pendrive for montado com a setinha fechada, o ícone dele aparece sozinho (o próprio applet de unidades se mostra) e some quando a unidade é desmontada. Enquanto ele estiver à vista, a setinha inverte: mostra os outros e esconde ele.
 - **Relógio em duas linhas, igual ao Windows** (hora em cima, data `12/10/2026` embaixo), nos dois monitores. Applet calendário, instâncias 13 (monitor 1) e 20 (monitor 2), com formato personalizado `%H:%M%n%d/%m/%Y` (`%n` quebra a linha). Passando o mouse aparece a data por extenso. Arquivos em `configs/cinnamon/relogio/`. Pra mudar: botão direito no relógio → Configurar.
+- **Trocar fone ↔ caixa com um clique (19/10/2026):** o ícone 🎧/🔊 do lado do volume mostra por onde o som está saindo. Clicar troca entre o "Fone HyperX" e a "Caixa de som", e o que está tocando muda junto (o PipeWire leva os apps pra nova saída padrão). Também dá pra trocar com **Super + Ctrl + V**. O botão direito lista todas as saídas (inclusive o monitor) e tem atalho pras Configurações de som. Esse applet eu mesmo fiz (`saida-de-som@arrualuiz`, em `configs/cinnamon/saida-de-som/`), porque o volume do Cinnamon só deixa trocar a saída escondido no botão direito → "Dispositivo de saída". Os nomes das saídas vêm de `configs/wireplumber/` e dá pra mudar em botão direito → Configurar.
+- **Volume nas duas barras:** o applet de som do Cinnamon diz que só aceita uma cópia, então as Configurações → Applets não deixam pôr outra. Mas ele funciona com duas: coloquei a segunda (instância 23, no monitor 2) direto no `enabled-applets` (está no `paineis.txt`). As duas mostram o mesmo volume e dividem as mesmas configurações.
 - **Apps fixados no monitor 1:** Terminal, Chrome Pessoal, Chrome PUC, Jupyter Lab, VS Code, IntelliJ, PyCharm, Android Studio, DBeaver.
 
 ---
@@ -211,8 +215,8 @@ Filmes do PC abrem no **mpv** (`io.mpv.Mpv`, Flatpak), não no Celluloid. A conf
 | `instalar-dev.sh` | Programas via apt (precisa de `sudo`) |
 | `instalar-usuario.sh` | Flatpaks, Node, Jupyter, Toolbox, Git (sem senha) |
 | `ajustar-sistema.sh` | Boot (GRUB), nome do PC, swap, remoção de sobras de notebook (precisa de `sudo`) |
-| `aplicar-configuracoes.sh` | Barras, Pomodoro, setinha da bandeja, atalhos, ícones, lançadores, som, energia, aceleração de vídeo |
-| `configs/cinnamon/` | Barras de tarefas (16/17.json), painéis, atalhos (`atalhos.dconf`), setinha da bandeja (`setinha/`), relógio (`relogio/`) |
+| `aplicar-configuracoes.sh` | Barras, Pomodoro, setinha da bandeja, saída de som, atalhos, ícones, lançadores, som, energia, aceleração de vídeo |
+| `configs/cinnamon/` | Barras de tarefas (16/17.json), painéis, atalhos (`atalhos.dconf`), setinha da bandeja (`setinha/`), relógio (`relogio/`), applet de trocar a saída de som (`saida-de-som/`) |
 | `configs/aplicativos/` + `configs/icones/` | Lançadores do Chrome Pessoal/PUC e do Jupyter |
 | `configs/wireplumber/` | Nomes amigáveis do som (só serve com o mesmo hardware) |
 | `configs/autostart/` | CopyQ abrindo junto com o sistema |

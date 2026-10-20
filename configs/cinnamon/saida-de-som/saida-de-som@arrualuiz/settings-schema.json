@@ -1,0 +1,17 @@
+{
+  "fone": {
+    "type": "entry",
+    "default": "Fone HyperX",
+    "description": "Primeira saída (o nome que aparece nas Configurações de som)"
+  },
+  "caixa": {
+    "type": "entry",
+    "default": "Caixa de som",
+    "description": "Segunda saída"
+  },
+  "atalho": {
+    "type": "keybinding",
+    "default": "<Super><Control>v",
+    "description": "Atalho pra trocar (igual ao Win+Ctrl+V do Windows 11)"
+  }
+}
