@@ -2,3 +2,4 @@ enabled-applets=['panel1:left:0:menu@cinnamon.org:0', 'panel1:left:1:separator@c
 panels-enabled=['1:0:bottom', '2:1:bottom']
 panels-height=['1:46', '2:46']
 next-applet-id=26
+panel-zone-symbolic-icon-sizes='[{"panelId": 1, "left": 34, "center": 34, "right": 17}, {"panelId": 2, "left": 34, "center": 34, "right": 17}]'
