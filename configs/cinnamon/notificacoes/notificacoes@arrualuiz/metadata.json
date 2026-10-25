@@ -1,0 +1,7 @@
+{
+  "uuid": "notificacoes@arrualuiz",
+  "name": "Notificações (com Não perturbe)",
+  "description": "Sino com o número de notificações em destaque. No modo Não perturbe nada aparece na tela, mas tudo fica guardado e somando no sino.",
+  "icon": "xsi-notifications-symbolic",
+  "max-instances": 1
+}

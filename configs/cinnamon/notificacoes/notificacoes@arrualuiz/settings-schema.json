@@ -1,0 +1,32 @@
+{
+  "naoPerturbe": {
+    "type": "switch",
+    "default": false,
+    "description": "Não perturbe: não mostrar na tela, só guardar no sino"
+  },
+  "ignorarPassageiras": {
+    "type": "switch",
+    "default": true,
+    "description": "Ignorar as notificações passageiras (as que somem sozinhas, tipo volume)"
+  },
+  "maisNovasPrimeiro": {
+    "type": "switch",
+    "default": true,
+    "description": "Mostrar as mais novas primeiro"
+  },
+  "atalhoAbrir": {
+    "type": "keybinding",
+    "default": "<Super>n",
+    "description": "Atalho pra abrir a lista"
+  },
+  "atalhoLimpar": {
+    "type": "keybinding",
+    "default": "<Shift><Super>c",
+    "description": "Atalho pra limpar tudo"
+  },
+  "atalhoNaoPerturbe": {
+    "type": "keybinding",
+    "default": "<Control><Super>n",
+    "description": "Atalho pra ligar/desligar o Não perturbe"
+  }
+}

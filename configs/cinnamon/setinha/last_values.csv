@@ -3,12 +3,13 @@ systray@cinnamon.org,false
 xapp-status@cinnamon.org,false
 removable-drives@cinnamon.org,false
 pomodoro@gregfreeman.org,false
-notifications@cinnamon.org,false
 printers@cinnamon.org,false
 keyboard@cinnamon.org,false
 favorites@cinnamon.org,false
 network@cinnamon.org,true
+saida-de-som@arrualuiz,true
 sound@cinnamon.org,true
 power@cinnamon.org,false
 calendar@cinnamon.org,true
+notificacoes@arrualuiz,true
 cornerbar@cinnamon.org,true

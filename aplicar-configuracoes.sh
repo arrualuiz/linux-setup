@@ -73,6 +73,10 @@ echo "==> Saída de som: um clique (ou Super+Ctrl+V) troca entre o fone e a caix
 mkdir -p ~/.local/share/cinnamon/applets
 cp -r $C/cinnamon/saida-de-som/saida-de-som@arrualuiz ~/.local/share/cinnamon/applets/
 
+echo "==> Sino de notificações: número em destaque e Não perturbe que guarda (Super+Ctrl+N)"
+# Também é meu, fica entre o relógio e o mostrar área de trabalho (paineis.txt)
+cp -r $C/cinnamon/notificacoes/notificacoes@arrualuiz ~/.local/share/cinnamon/applets/
+
 echo "==> Barras de tarefas: uma por monitor, botões separados por janela, volume nas duas"
 d=~/.config/cinnamon/spices/grouped-window-list@cinnamon.org
 mkdir -p $d
