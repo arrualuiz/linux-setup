@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Chrome Contas
+Comment=Google Chrome – Contas (conta arrualuiz)
+Exec=/usr/bin/google-chrome-stable --user-data-dir=/home/arrua/.config/chrome-contas --class=ChromeContas %U
+Icon=/home/arrua/.local/share/icons/chrome-perfis/contas.png
+Terminal=false
+Categories=Network;WebBrowser;
+StartupNotify=true
+StartupWMClass=ChromeContas

@@ -53,8 +53,12 @@ Serve de guia caso eu formate ou troque de PC, e de diário dos problemas que j�
 
 - **GitHub CLI:** rodar `gh auth login` num **terminal normal**, porque ele é interativo. Escolher GitHub.com → HTTPS → login pelo navegador. Conta: `arrualuiz`.
 - **JetBrains Toolbox:** abrir e instalar **IntelliJ**, **PyCharm** e **Android Studio**. Depois fixar eles na barra (botão direito → fixar).
-- **Chrome Pessoal:** entrar com `luizarrua16@gmail.com`.
-- **Chrome PUC:** abrir pelo ícone "Chrome PUC" (ou **Ctrl+Alt+P**) e entrar com **`dev.luizarrua@gmail.com`**. Esse Chrome é uma instância separada (`~/.config/chrome-puc`), por isso fica num botão próprio na barra.
+- **Chromes, um por conta:** cada conta do Google tem o próprio Chrome, com botão, ícone e nome próprios na barra. Abrir cada um pelo ícone e entrar com a conta dele:
+  - **Chrome Arrua** (`~/.config/google-chrome`, o Chrome normal): `luizarrua16@gmail.com`.
+  - **Chrome PUC** (`~/.config/chrome-puc`, ou **Ctrl+Alt+P**): **`dev.luizarrua@gmail.com`**.
+  - **Chrome UFPR** (`~/.config/chrome-ufpr`): a conta `oluizarrua`.
+  - **Chrome Contas** (`~/.config/chrome-contas`): a conta `arrualuiz`.
+  - Não adicionar perfis novos dentro de um Chrome (o "Adicionar perfil" do Chrome): eles caem no mesmo botão. Para outra conta, criar outro Chrome separado, como está em [Problemas que já resolvi](#-problemas-que-já-resolvi).
 - **Google Agenda:** bloquear as notificações no Chrome Pessoal em `chrome://settings/content/notifications`.
 - **Android Studio:** ao criar um emulador (AVD), em *Emulated Performance → Graphics* escolher **Software**, enquanto a placa for a GT 420.
 - **Spotify:** abrir pelo menu e entrar com a minha conta.
@@ -107,7 +111,7 @@ Serve de guia caso eu formate ou troque de PC, e de diário dos problemas que j�
 - **Trocar fone ↔ caixa com um clique (19/10/2026):** o ícone 🎧/🔊 do lado do volume mostra por onde o som está saindo. Clicar troca entre o "Fone HyperX" e a "Caixa de som", e o que está tocando muda junto (o PipeWire leva os apps pra nova saída padrão). Também dá pra trocar com **Super + Ctrl + V**. O botão direito lista todas as saídas (inclusive o monitor) e tem atalho pras Configurações de som. Esse applet eu mesmo fiz (`saida-de-som@arrualuiz`, em `configs/cinnamon/saida-de-som/`), porque o volume do Cinnamon só deixa trocar a saída escondido no botão direito → "Dispositivo de saída". Os nomes das saídas vêm de `configs/wireplumber/` e dá pra mudar em botão direito → Configurar.
 - **Sino de notificações com Não perturbe (25/10/2026):** a ordem do canto direito agora é igual à do Windows: setinha ^, rede, saída de som, volume, relógio, **sino** e o mostrar área de trabalho. O sino fica sempre à vista; quando tem notificação ele fica amarelo e o número aparece numa bolinha vermelha (vermelho piscando se for urgente). O **Não perturbe** (clique do meio no sino, **Super + Ctrl + N** ou a chave dentro da lista) troca o ícone por um sino riscado: nada aparece na tela, mas tudo fica guardado e somando no sino. Esse applet eu mesmo fiz (`notificacoes@arrualuiz`, em `configs/cinnamon/notificacoes/`, baseado no `notifications@cinnamon.org`), porque o "Desativar notificações" das Configurações do Cinnamon **apaga** o que chega com ele ligado em vez de guardar. Ligar o Não perturbe também tira da tela o balão que estiver aberto (os urgentes só saem clicando). Ele troca uma função interna da bandeja do Cinnamon (`_showNotification`); se depois de uma atualização do Cinnamon as notificações pararem de aparecer ou de somar, é ali que mexer.
 - **Volume nas duas barras:** o applet de som do Cinnamon diz que só aceita uma cópia, então as Configurações → Applets não deixam pôr outra. Mas ele funciona com duas: coloquei a segunda (instância 23, no monitor 2) direto no `enabled-applets` (está no `paineis.txt`). As duas mostram o mesmo volume e dividem as mesmas configurações.
-- **Apps fixados no monitor 1:** Terminal, Chrome Pessoal, Chrome PUC, Jupyter Lab, VS Code, IntelliJ, PyCharm, Android Studio, DBeaver.
+- **Apps fixados no monitor 1:** Terminal, Chrome Arrua, Chrome Contas, Chrome PUC, Chrome UFPR, Jupyter Lab, VS Code, IntelliJ, PyCharm, Android Studio, DBeaver.
 
 ---
 
@@ -139,6 +143,12 @@ Filmes do PC abrem no **mpv** (`io.mpv.Mpv`, Flatpak), não no Celluloid. A conf
 ---
 
 ## 🩺 Problemas que já resolvi
+
+### Todas as contas do Chrome no mesmo botão da barra (28/10/2026)
+- **Sintoma:** eu tinha 4 contas (Arrua, PUCPR, UFPR e Contas) como perfis dentro do mesmo Chrome. Todas as janelas ficavam com o mesmo ícone e iam para o botão do "Chrome Arrua", sem dar para saber qual era qual.
+- **Causa:** no Linux, todas as janelas de um Chrome têm a mesma "classe" (`Google-chrome`), não importa o perfil. É pela classe que a barra decide o botão. O Chrome não tem opção para mudar a classe de um perfil só.
+- **Solução:** um Chrome separado para cada conta, igual ao da PUC: cada um tem a própria pasta (`--user-data-dir=~/.config/chrome-<nome>`), a própria classe (`--class=Chrome<Nome>`) e um atalho em `configs/aplicativos/` com `StartupWMClass` igual à classe. O ícone com o nome escrito fica em `configs/icones/`. Para levar um perfil que já existe sem perder login, extensões e abas: fechar o Chrome com **Ctrl+Shift+Q** (fechar no X não basta, porque ele continua rodando em segundo plano), mover a pasta `~/.config/google-chrome/Profile N` para `~/.config/chrome-<nome>/Default` e copiar junto o `Local State`, deixando nele só esse perfil. É no `Local State` que fica a aceleração de vídeo desligada.
+- **Para conferir:** `wmctrl -lx | grep -i chrome` mostra a classe de cada janela.
 
 ### Filme 1080p travando no Celluloid (13/10/2026)
 - **Sintoma:** filme 1080p (H.264) engasgando no player padrão do Mint (Celluloid).
@@ -222,6 +232,6 @@ Filmes do PC abrem no **mpv** (`io.mpv.Mpv`, Flatpak), não no Celluloid. A conf
 | `ajustar-sistema.sh` | Boot (GRUB), nome do PC, swap, remoção de sobras de notebook (precisa de `sudo`) |
 | `aplicar-configuracoes.sh` | Barras, Pomodoro, setinha da bandeja, saída de som, atalhos, ícones, lançadores, som, energia, aceleração de vídeo |
 | `configs/cinnamon/` | Barras de tarefas (16/17.json), painéis, atalhos (`atalhos.dconf`), setinha da bandeja (`setinha/`), relógio (`relogio/`), applet de trocar a saída de som (`saida-de-som/`), sino de notificações (`notificacoes/`) |
-| `configs/aplicativos/` + `configs/icones/` | Lançadores do Chrome Pessoal/PUC e do Jupyter |
+| `configs/aplicativos/` + `configs/icones/` | Lançadores dos Chromes (Arrua, PUC, UFPR e Contas) e do Jupyter |
 | `configs/wireplumber/` | Nomes amigáveis do som (só serve com o mesmo hardware) |
 | `configs/autostart/` | CopyQ abrindo junto com o sistema |

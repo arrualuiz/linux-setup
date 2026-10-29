@@ -14,7 +14,7 @@ for k in desktop-effects desktop-effects-workspace desktop-effects-on-dialogs de
 done
 gsettings set org.cinnamon.desktop.interface enable-animations false
 
-echo "==> Lançadores do Chrome (Pessoal e PUC) e do Jupyter"
+echo "==> Lançadores do Chrome (Arrua, PUC, UFPR e Contas) e do Jupyter"
 mkdir -p $A ~/.local/share/icons/chrome-perfis
 cp $C/icones/*.png ~/.local/share/icons/chrome-perfis/
 cp $C/aplicativos/*.desktop $A/
@@ -27,7 +27,7 @@ done
 
 echo "==> Ícones na área de trabalho (só no monitor principal)"
 gsettings set org.nemo.desktop desktop-layout 'true::false'
-for f in chrome-pessoal chrome-puc jupyter-lab; do
+for f in chrome-pessoal chrome-puc chrome-ufpr chrome-contas jupyter-lab; do
   cp $A/$f.desktop "$D/"; chmod +x "$D/$f.desktop"
   gio set "$D/$f.desktop" metadata::trusted true 2>/dev/null || true
 done
@@ -122,9 +122,9 @@ powerprofilesctl set performance 2>/dev/null || true
 if lspci | grep -q 'GT 420'; then
   echo "==> GT 420: desligando a aceleração de vídeo no Chrome, no VS Code, no Spotify e nos apps GTK4 (com o nouveau ela trava o PC)"
   if pgrep -x chrome >/dev/null; then
-    echo "   ⚠️ Feche os dois Chromes e rode este script de novo para valer neles."
+    echo "   ⚠️ Feche todos os Chromes (Ctrl+Shift+Q) e rode este script de novo para valer neles."
   else
-    for d in ~/.config/google-chrome ~/.config/chrome-puc; do
+    for d in ~/.config/google-chrome ~/.config/chrome-puc ~/.config/chrome-ufpr ~/.config/chrome-contas; do
       [ -f "$d/Local State" ] || continue
       python3 - "$d/Local State" <<'EOF'
 import json, sys

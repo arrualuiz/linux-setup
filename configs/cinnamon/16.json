@@ -369,6 +369,8 @@
             "org.gnome.Terminal.desktop",
             "chrome-pessoal.desktop",
             "chrome-puc.desktop",
+            "chrome-ufpr.desktop",
+            "chrome-contas.desktop",
             "jupyter-lab.desktop",
             "com.microsoft.VSCode.desktop",
             "jetbrains-idea-8743186c-a97f-48cc-8944-27149eee4575.desktop",

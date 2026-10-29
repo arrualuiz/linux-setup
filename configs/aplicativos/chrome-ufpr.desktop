@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Chrome UFPR
+Comment=Google Chrome – UFPR (conta oluizarrua)
+Exec=/usr/bin/google-chrome-stable --user-data-dir=/home/arrua/.config/chrome-ufpr --class=ChromeUFPR %U
+Icon=/home/arrua/.local/share/icons/chrome-perfis/ufpr.png
+Terminal=false
+Categories=Network;WebBrowser;
+StartupNotify=true
+StartupWMClass=ChromeUFPR
