@@ -1,5 +1,5 @@
 [/]
-custom-list=['custom0', 'custom1', 'custom2', 'custom3', 'custom4']
+custom-list=['custom0', 'custom1', 'custom2', 'custom3', 'custom4', 'custom5']
 
 [custom-keybindings/custom0]
 binding=['<Primary><Alt>p']
@@ -25,6 +25,11 @@ name='Histórico da área de transferência (CopyQ)'
 binding=['<Super>period']
 command='smile-auto-fechar'
 name='Emojis (Smile)'
+
+[custom-keybindings/custom5]
+binding=['<Super>y']
+command='youtube-no-mpv'
+name='Vídeo do YouTube no mpv'
 
 [media-keys]
 area-screenshot=@as []

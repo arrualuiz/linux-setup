@@ -139,7 +139,12 @@ powerprofilesctl get                                        # performance
 
 ### 🎬 Vídeo sem placa de vídeo decente
 
-A GT 420 com nouveau não decodifica vídeo, então o YouTube roda todo no processador. A extensão **enhanced-h264ify** (Chrome Pessoal) bloqueia os formatos pesados (VP8, VP9, AV1) e os vídeos a 60 fps, e o YouTube cai para **H.264 até 1080p 30 fps**, que é o mais leve. Se quiser vídeo a 60 fps, desmarcar "Block 60fps" nas opções da extensão; o Xeon aguenta, só usa mais CPU.
+A GT 420 com nouveau não decodifica vídeo, então o YouTube roda todo no processador. A extensão **enhanced-h264ify** (Chrome Pessoal) bloqueia os formatos pesados (VP8, VP9, AV1) e os vídeos a 60 fps, e o YouTube cai para **H.264 até 1080p 30 fps**, que é o mais leve. Se quiser vídeo a 60 fps, desmarcar "Block 60fps" nas opções da extensão; o Xeon aguenta, só usa mais CPU. **Atenção:** vídeo gravado a 60 fps (futebol, jogo, muito canal novo) só tem 720p e 1080p a 60 fps, então com o "Block 60fps" ele fica em **480p** no Chrome.
+
+**Super + Y passa o vídeo do Chrome pro mpv (30/10/2026):** com o vídeo tocando no YouTube, Super + Y pausa o Chrome e abre o mesmo vídeo no mpv, do mesmo segundo, em até 1080p 60 fps. No Chrome sem aceleração tudo (decodificar, redimensionar, desenhar a página) é feito pelo processador; no mpv o processador só decodifica e o `vo=xv` põe a imagem na tela. Teste com o Chrome aberto: 30 s de 1080p60, em H.264 ou VP9, decodificados em ~24 s, ou seja, sobra. Sem vídeo tocando, ele abre o link do YouTube que estiver copiado.
+  - Quem faz é o `configs/bin/youtube-no-mpv`: o Chrome mostra o vídeo que está tocando no controle de mídia do sistema (MPRIS), com título e posição, mas não com o link. O script procura esse título no histórico do Chrome (uma cópia do `History`, que fica travado) e manda o link pro mpv com `--start`. O formato escolhido está no `ytdl-format` do `configs/mpv/mpv.conf` (H.264 até 1080p; sem H.264, qualquer um menos AV1).
+  - Quem baixa o vídeo é o `yt-dlp` que vem dentro do Flatpak do mpv. Quando o YouTube muda alguma coisa ele para de funcionar (aparece um aviso); `flatpak update` traz o novo.
+  - No mpv não tem comentário nem recomendação, e também não tem propaganda.
 
 Os filmes eu baixo com o **qBittorrent** (versão 4.6.3), instalado em 13/10/2026 com `sudo apt install qbittorrent`. Ele vem do repositório normal do Ubuntu 24.04 (*noble*), que é a base do Mint 22.3, então não precisou de repositório extra. No `instalar-dev.sh` ele já está junto dos outros programas.
 

@@ -1,0 +1,105 @@
+#!/usr/bin/env python3
+# Super+Y: passa pro mpv o vídeo do YouTube que está tocando no Chrome, do mesmo segundo, e pausa o Chrome.
+# Com a aceleração desligada (a GT 420 trava o PC com o nouveau), o Chrome decodifica e desenha tudo no
+# processador e engasga; o mpv decodifica no processador com folga e o xv só põe a imagem na tela.
+# Sem vídeo no Chrome, abre o link do YouTube que estiver copiado.
+import glob, os, re, shutil, sqlite3, subprocess, tempfile, time
+from urllib.parse import parse_qs, urlparse
+
+import gi
+gi.require_version('Gdk', '3.0')
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gdk, Gio, GLib, Gtk
+
+bus = Gio.bus_get_sync(Gio.BusType.SESSION)
+MPRIS = '/org/mpris/MediaPlayer2'
+
+
+def chamar(dest, caminho, interface, metodo, params=None):
+    return bus.call_sync(dest, caminho, interface, metodo, params, None, Gio.DBusCallFlags.NONE, 2000, None)
+
+
+def aviso(texto):
+    subprocess.Popen(['notify-send', '-i', 'io.mpv.Mpv', '-t', '5000', 'YouTube no mpv', texto])
+
+
+def chromes():
+    """Players do Chrome na barra de mídia: o que está tocando primeiro."""
+    nomes = chamar('org.freedesktop.DBus', '/org/freedesktop/DBus', 'org.freedesktop.DBus', 'ListNames').unpack()[0]
+    achados = []
+    for nome in nomes:
+        if not nome.startswith('org.mpris.MediaPlayer2.chromium.instance'):
+            continue
+        try:
+            p = chamar(nome, MPRIS, 'org.freedesktop.DBus.Properties', 'GetAll',
+                       GLib.Variant('(s)', ('org.mpris.MediaPlayer2.Player',))).unpack()[0]
+        except GLib.Error:
+            continue
+        titulo = p.get('Metadata', {}).get('xesam:title')
+        if titulo:
+            achados.append((p.get('PlaybackStatus') != 'Playing', nome, titulo, p.get('Position', 0)))
+    return sorted(achados)
+
+
+def link_no_historico(nome, titulo):
+    """O player não diz o link; procura a aba com esse título no histórico daquele Chrome."""
+    pid = nome.rsplit('instance', 1)[1]
+    try:
+        args = open(f'/proc/{pid}/cmdline').read().split('\0')
+    except OSError:
+        return None
+    dados = next((a.split('=', 1)[1] for a in args if a.startswith('--user-data-dir=')),
+                 os.path.expanduser('~/.config/google-chrome'))
+    for historico in glob.glob(os.path.join(dados, '*', 'History')):
+        with tempfile.TemporaryDirectory() as tmp:  # o Chrome deixa o arquivo travado; lê uma cópia
+            copia = shutil.copy(historico, tmp)
+            try:
+                linha = sqlite3.connect(copia).execute(
+                    "select url from urls where instr(title, ?) and url like '%youtube.com/%' "
+                    "order by last_visit_time desc limit 1", (titulo,)).fetchone()
+            except sqlite3.Error:
+                continue
+        if linha:
+            return linha[0]
+
+
+def link_copiado():
+    texto = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD).wait_for_text() or ''
+    m = re.search(r'https?://(www\.|m\.)?(youtube\.com/(watch|shorts|live)|youtu\.be/)\S+', texto)
+    return m and m.group(0)
+
+
+def limpo(url):
+    """Só o vídeo: tira a playlist e o &t= (o começo vai no --start)."""
+    u = urlparse(url)
+    v = parse_qs(u.query).get('v')
+    return f'https://www.youtube.com/watch?v={v[0]}' if u.path == '/watch' and v else url
+
+
+player = next(iter(chromes()), None)
+url, inicio, titulo = None, None, None
+if player:
+    _, nome, titulo, posicao = player
+    url = link_no_historico(nome, titulo)
+    if url:
+        url, inicio = limpo(url), max(0, posicao // 1_000_000 - 1)
+if not url:
+    url, player = link_copiado(), None
+if not url:
+    aviso('Nenhum vídeo do YouTube tocando no Chrome nem link copiado.')
+    raise SystemExit(1)
+
+if player:
+    chamar(player[1], MPRIS, 'org.mpris.MediaPlayer2.Player', 'Pause')
+aviso(f'Abrindo {titulo or url}…')
+
+cmd = ['flatpak', 'run', 'io.mpv.Mpv']
+if inicio:
+    cmd.append(f'--start={inicio}')
+if titulo:
+    cmd.append(f'--force-media-title={titulo}')
+comeco = time.time()
+if subprocess.run(cmd + [url]).returncode != 0 and time.time() - comeco < 30:
+    aviso('O mpv não conseguiu abrir. Se o YouTube mudou alguma coisa, atualizar resolve: flatpak update')
+    if player:
+        chamar(player[1], MPRIS, 'org.mpris.MediaPlayer2.Player', 'Play')
