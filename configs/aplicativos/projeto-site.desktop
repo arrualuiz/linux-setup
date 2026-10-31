@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Meu site
+Comment=Abre o VS Code em /home/arrua/dev/projetos/site-pessoal e o Claude com a frase de retomar
+Exec=/home/arrua/.local/bin/abrir-projeto /home/arrua/dev/projetos/site-pessoal "Vamos continuar o site pessoal."
+Icon=web-browser
+Terminal=false
+Categories=Development;
+StartupNotify=false

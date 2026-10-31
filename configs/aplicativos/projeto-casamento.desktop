@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Casamento
+Comment=Abre o VS Code em /home/arrua/dev/site-casamento e o Claude com a frase de retomar
+Exec=/home/arrua/.local/bin/abrir-projeto /home/arrua/dev/site-casamento "Vamos continuar o site do casamento."
+Icon=emblem-favorite
+Terminal=false
+Categories=Development;
+StartupNotify=false

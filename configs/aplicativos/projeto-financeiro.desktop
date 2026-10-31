@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Financeiro
+Comment=Abre o VS Code em /home/arrua/dev/projetos/financeiro e o Claude com a frase de retomar
+Exec=/home/arrua/.local/bin/abrir-projeto /home/arrua/dev/projetos/financeiro "Vamos continuar o financeiro unificado."
+Icon=accessories-calculator
+Terminal=false
+Categories=Development;
+StartupNotify=false

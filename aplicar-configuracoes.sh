@@ -14,7 +14,7 @@ for k in desktop-effects desktop-effects-workspace desktop-effects-on-dialogs de
 done
 gsettings set org.cinnamon.desktop.interface enable-animations false
 
-echo "==> Lançadores do Chrome (Arrua, PUC, UFPR e Contas) e do Jupyter"
+echo "==> Lançadores do Chrome (Arrua, PUC, UFPR e Contas), do Jupyter e dos projetos"
 mkdir -p $A ~/.local/share/icons/chrome-perfis
 cp $C/icones/*.png ~/.local/share/icons/chrome-perfis/
 cp $C/aplicativos/*.desktop $A/
@@ -27,7 +27,8 @@ done
 
 echo "==> Ícones na área de trabalho (só no monitor principal)"
 gsettings set org.nemo.desktop desktop-layout 'true::false'
-for f in chrome-pessoal chrome-puc chrome-ufpr chrome-contas jupyter-lab; do
+for f in chrome-pessoal chrome-puc chrome-ufpr chrome-contas jupyter-lab \
+         projeto-casamento projeto-eleicoes projeto-financeiro projeto-site projeto-stigpr; do
   cp $A/$f.desktop "$D/"; chmod +x "$D/$f.desktop"
   gio set "$D/$f.desktop" metadata::trusted true 2>/dev/null || true
 done
@@ -35,7 +36,8 @@ for f in org.gnome.Terminal com.microsoft.VSCode sublime_text dbeaver-ce firefox
   src=$(ls /usr/share/applications/$f.desktop 2>/dev/null) || continue
   cp "$src" "$D/"; chmod +x "$D/$f.desktop"; gio set "$D/$f.desktop" metadata::trusted true 2>/dev/null || true
 done
-ln -sfn ~/dev/faculdade/pucpr/ads "$D/Faculdade"
+# Pastas "Últimos projetos" (mexidos desde 01/09/2026) e "Faculdade", com um atalho VS Code + Claude em cada projeto
+bash $C/bin/pastas-de-projetos
 # Ícones livres pra arrastar: sem "organizar automaticamente", mas encaixando na grade.
 # O nemo-desktop regrava esse arquivo, então edita antes e mata com -9 (o Cinnamon reabre).
 m=~/.config/nemo/desktop-metadata
@@ -88,7 +90,7 @@ d=~/.config/cinnamon/spices/calendar@cinnamon.org
 mkdir -p $d
 cp $C/cinnamon/relogio/13.json $C/cinnamon/relogio/20.json $d/
 
-echo "==> Atalhos de teclado (Print, Shift+Print, Super+V, Super+., Super+Tab, Ctrl+Alt+P)"
+echo "==> Atalhos de teclado (Print, Shift+Print, Super+V, Super+., Super+Y, Super+Tab, Ctrl+Alt+P)"
 # Scripts dos atalhos (ex.: smile-auto-fechar no Win+.)
 mkdir -p ~/.local/bin && cp $C/bin/* ~/.local/bin/ && chmod +x ~/.local/bin/*
 dconf load /org/cinnamon/desktop/keybindings/ < $C/cinnamon/atalhos.dconf

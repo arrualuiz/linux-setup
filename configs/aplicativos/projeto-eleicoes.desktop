@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Eleições
+Comment=Abre o VS Code em /home/arrua/dev/projetos/xx-noite-da-apuracao-2 e o Claude com a frase de retomar
+Exec=/home/arrua/.local/bin/abrir-projeto /home/arrua/dev/projetos/xx-noite-da-apuracao-2 "Vamos continuar a noite da apuração 2."
+Icon=x-office-presentation
+Terminal=false
+Categories=Development;
+StartupNotify=false

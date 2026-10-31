@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=STIGPR
+Comment=Abre o VS Code em /home/arrua/dev/stigpr-site e o Claude com a frase de retomar
+Exec=/home/arrua/.local/bin/abrir-projeto /home/arrua/dev/stigpr-site "Vamos continuar o site do STIGPR."
+Icon=network-workgroup
+Terminal=false
+Categories=Development;
+StartupNotify=false

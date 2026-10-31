@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# Abre um projeto pra trabalhar: o VS Code na pasta e o Claude com a frase de retomar já escrita
+# (é só conferir e apertar Enter). Uso: abrir-projeto PASTA "FRASE"
+# Os atalhos "projeto-*.desktop" da área de trabalho chamam este script.
+pasta="$1"
+frase="$2 Lê os arquivos do projeto e a seção dele no Tarefas pendentes e me diz em poucas linhas onde parei, o que está esperando por mim (🙋) e o próximo passo."
+
+code "$pasta"
+
+# Espera a janela do projeto aparecer (o VS Code pode levar um tempo pra abrir do zero)
+# e põe ela na frente: o link do Claude cai na janela que estiver na frente.
+titulo=" $(basename "$pasta") - Visual Studio Code"
+for _ in $(seq 60); do
+  janela=$(wmctrl -l | grep -F -- "$titulo" | head -1 | cut -d' ' -f1)
+  [ -n "$janela" ] && break
+  sleep 1
+done
+[ -n "$janela" ] && wmctrl -i -a "$janela"
+sleep 3
+
+link=$(python3 -c 'import sys, urllib.parse; print(urllib.parse.quote(sys.argv[1]))' "$frase")
+code --open-url "vscode://anthropic.claude-code/open?prompt=$link"
