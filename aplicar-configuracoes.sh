@@ -14,7 +14,7 @@ for k in desktop-effects desktop-effects-workspace desktop-effects-on-dialogs de
 done
 gsettings set org.cinnamon.desktop.interface enable-animations false
 
-echo "==> Lançadores do Chrome (Arrua, PUC, UFPR e Contas), do Jupyter e dos projetos"
+echo "==> Lançadores do Chrome (Arrua, PUC, UFPR e Contas), do Jupyter, do Paseo e dos projetos"
 mkdir -p $A ~/.local/share/icons/chrome-perfis
 cp $C/icones/*.png ~/.local/share/icons/chrome-perfis/
 cp $C/aplicativos/*.desktop $A/

@@ -41,6 +41,17 @@ tar -xzf "$TMP/toolbox.tar.gz" -C ~/.local/opt/jetbrains-toolbox --strip-compone
 rm -rf "$TMP"
 (nohup ~/.local/opt/jetbrains-toolbox/bin/jetbrains-toolbox >/dev/null 2>&1 &)
 
+echo "==> Paseo (Claude Code no PC e no celular), AppImage oficial do GitHub"
+# Ele se atualiza sozinho. O lançador (configs/aplicativos/paseo.desktop) entra no aplicar-configuracoes.sh
+P=~/.local/opt/paseo
+mkdir -p "$P"
+curl -fsSL -o "$P/Paseo-x86_64.AppImage" https://github.com/getpaseo/paseo/releases/latest/download/Paseo-x86_64.AppImage
+chmod +x "$P/Paseo-x86_64.AppImage"
+TMP=$(mktemp -d)
+(cd "$TMP" && "$P/Paseo-x86_64.AppImage" --appimage-extract 'usr/share/icons/hicolor/128x128/apps/Paseo.png' >/dev/null)
+cp "$TMP/squashfs-root/usr/share/icons/hicolor/128x128/apps/Paseo.png" "$P/paseo.png"
+rm -rf "$TMP"
+
 echo "==> Git"
 git config --global user.name "arrualuiz"
 git config --global user.email "luizarrua16@gmail.com"

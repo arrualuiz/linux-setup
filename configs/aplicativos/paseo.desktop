@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Paseo
+Comment=Claude Code no PC e no celular
+Exec=env PASEO_ELECTRON_FLAGS=--disable-gpu /home/arrua/.local/opt/paseo/Paseo-x86_64.AppImage %U
+Icon=/home/arrua/.local/opt/paseo/paseo.png
+Terminal=false
+StartupWMClass=Paseo
+MimeType=x-scheme-handler/paseo;
+Categories=Development;

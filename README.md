@@ -32,7 +32,7 @@ Serve de guia caso eu formate ou troque de PC, e de diário dos problemas que j�
    ```bash
    sudo bash ~/dev/linux-setup/instalar-dev.sh
    ```
-5. **Programas que não precisam de senha** (Postman, Flameshot, NormCap, CopyQ, Smile, Spotify, Node, Jupyter, JetBrains Toolbox, config do Git):
+5. **Programas que não precisam de senha** (Postman, Flameshot, NormCap, CopyQ, Smile, Spotify, Node, Jupyter, JetBrains Toolbox, Paseo, config do Git):
    ```bash
    bash ~/dev/linux-setup/instalar-usuario.sh
    ```
@@ -62,6 +62,7 @@ Serve de guia caso eu formate ou troque de PC, e de diário dos problemas que j�
 - **Google Agenda:** bloquear as notificações no Chrome Pessoal em `chrome://settings/content/notifications`.
 - **Android Studio:** ao criar um emulador (AVD), em *Emulated Performance → Graphics* escolher **Software**, enquanto a placa for a GT 420.
 - **Spotify:** abrir pelo menu e entrar com a minha conta.
+- **Paseo** (instalado em 31/10/2026): é o app que eu uso para o Claude Code, no PC e no celular. Ele usa o `claude` que já está instalado e logado, então instalar o Claude Code antes. Fica em `~/.local/opt/paseo/`, com as configurações em `~/.paseo/`, e se atualiza sozinho. Para usar no celular: instalar o app ([Android](https://play.google.com/store/apps/details?id=sh.paseo), [iPhone](https://apps.apple.com/app/paseo-pocket-engineer/id6758887924)) e, no PC, ir em Configurações → o PC → **Pair Device** e ler o QR code com o celular.
 - **Meus repositórios:** clonar todos de volta:
   ```bash
   mkdir -p ~/dev/projetos && cd ~/dev/projetos
@@ -174,7 +175,7 @@ Filmes do PC abrem no **mpv** (`io.mpv.Mpv`, Flatpak), não no Celluloid. A conf
 ### PC congelando inteiro, precisando reiniciar no botão (06/10/2026)
 - **Sintoma:** a tela travava por completo e só voltava reiniciando. Aconteceu 2 vezes seguidas.
 - **Causa:** o Chrome usa a placa de vídeo para desenhar as páginas. Com a GT 420 e o driver nouveau, ele manda comandos que a placa não aguenta, e ela trava. Como ela também desenha a tela toda, o PC inteiro congela. O log mostrava milhares de erros `nouveau ... gr: DATA_ERROR ... chrome[...]` e um `TRAP` logo antes de cada travamento.
-- **Solução:** aceleração de hardware **desligada** nos dois Chromes (`chrome://settings/system` → "Usar aceleração gráfica quando disponível") e no VS Code (`"disable-hardware-acceleration": true` em `~/.vscode/argv.json`, que usa o mesmo motor do Chrome). O **Spotify** (instalado em 10/10) também usa esse motor, então fica igual: `ui.hardware_acceleration=false` em `~/.var/app/com.spotify.Client/config/spotify/prefs`, ou no app em Configurações → Compatibilidade. O `aplicar-configuracoes.sh` já faz isso sozinho se detectar a GT 420.
+- **Solução:** aceleração de hardware **desligada** nos dois Chromes (`chrome://settings/system` → "Usar aceleração gráfica quando disponível") e no VS Code (`"disable-hardware-acceleration": true` em `~/.vscode/argv.json`, que usa o mesmo motor do Chrome). O **Spotify** (instalado em 10/10) também usa esse motor, então fica igual: `ui.hardware_acceleration=false` em `~/.var/app/com.spotify.Client/config/spotify/prefs`, ou no app em Configurações → Compatibilidade. O `aplicar-configuracoes.sh` já faz isso sozinho se detectar a GT 420. O **Paseo** (31/10) também usa esse motor: o lançador dele abre com `env PASEO_ELECTRON_FLAGS=--disable-gpu`, porque ele não aceita o `--disable-gpu` direto (dá `error: unknown option '--disable-gpu'` e não abre).
 - **Como conferir se voltou a acontecer:**
   ```bash
   journalctl -b -1 -k | grep -c DATA_ERROR   # erros da placa no boot anterior
@@ -210,7 +211,7 @@ Filmes do PC abrem no **mpv** (`io.mpv.Mpv`, Flatpak), não no Celluloid. A conf
 ## 🔜 Quando a RX 580 chegar
 
 1. Trocar a placa e ligar o PC. **Não precisa instalar driver nenhum**: o driver da AMD (`amdgpu`) já vem no kernel e o firmware dela já está instalado.
-2. Religar a aceleração de hardware nos **dois** Chromes (`chrome://settings/system`), no VS Code (comentar a linha `disable-hardware-acceleration` em `~/.vscode/argv.json`) e no Spotify (Configurações → Compatibilidade).
+2. Religar a aceleração de hardware nos **dois** Chromes (`chrome://settings/system`), no VS Code (comentar a linha `disable-hardware-acceleration` em `~/.vscode/argv.json`), no Spotify (Configurações → Compatibilidade) e no Paseo (tirar o `env PASEO_ELECTRON_FLAGS=--disable-gpu` do `configs/aplicativos/paseo.desktop`).
 3. Se quiser voltar ao Celluloid, tirar o `GSK_RENDERER=cairo` do `~/.profile`. O mpv pode trocar `vo=xv` por `vo=gpu` e `hwdec=no` por `hwdec=vaapi` em `~/.var/app/io.mpv.Mpv/config/mpv/mpv.conf`.
 4. No Android Studio, voltar o *Graphics* dos emuladores para **Hardware** ou **Automatic**.
 5. Conferir com `glxinfo -B | grep renderer` (deve aparecer AMD/Radeon).
@@ -238,11 +239,11 @@ Filmes do PC abrem no **mpv** (`io.mpv.Mpv`, Flatpak), não no Celluloid. A conf
 | Arquivo | Para quê |
 |---|---|
 | `instalar-dev.sh` | Programas via apt (precisa de `sudo`) |
-| `instalar-usuario.sh` | Flatpaks, Node, Jupyter, Toolbox, Git (sem senha) |
+| `instalar-usuario.sh` | Flatpaks, Node, Jupyter, Toolbox, Paseo, Git (sem senha) |
 | `ajustar-sistema.sh` | Boot (GRUB), nome do PC, swap, remoção de sobras de notebook (precisa de `sudo`) |
 | `aplicar-configuracoes.sh` | Barras, Pomodoro, setinha da bandeja, saída de som, atalhos, ícones, lançadores, som, energia, aceleração de vídeo |
 | `configs/cinnamon/` | Barras de tarefas (16/17.json), painéis, atalhos (`atalhos.dconf`), setinha da bandeja (`setinha/`), relógio (`relogio/`), applet de trocar a saída de som (`saida-de-som/`), sino de notificações (`notificacoes/`) |
-| `configs/aplicativos/` + `configs/icones/` | Lançadores dos Chromes (Arrua, PUC, UFPR e Contas), do Jupyter e dos projetos (`projeto-*.desktop`) |
+| `configs/aplicativos/` + `configs/icones/` | Lançadores dos Chromes (Arrua, PUC, UFPR e Contas), do Jupyter, do Paseo e dos projetos (`projeto-*.desktop`) |
 | `configs/bin/` | Scripts dos atalhos: `smile-auto-fechar` (Super + .) e `abrir-projeto` (atalhos de projeto) e `pastas-de-projetos` (pastas "Últimos projetos" e "Faculdade") |
 | `configs/wireplumber/` | Nomes amigáveis do som (só serve com o mesmo hardware) |
 | `configs/autostart/` | CopyQ abrindo junto com o sistema |
