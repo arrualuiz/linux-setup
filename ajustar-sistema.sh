@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Ajustes do sistema para este PC (Xeon E5-2620 v3 + Huananzhi X99 + GT 420).
+# Ajustes do sistema para este PC (Xeon E5-2620 v3 + Huananzhi X99 + RTX 2060).
 # Precisa de senha. Rodar num terminal normal, com o Chrome fechado:
 #   sudo bash ~/dev/linux-setup/ajustar-sistema.sh
 # Depois REINICIAR o PC: o nome novo e os parâmetros de boot só valem depois disso.

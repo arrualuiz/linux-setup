@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # Super+Y: passa pro mpv o vídeo do YouTube que está tocando no Chrome, do mesmo segundo, e pausa o Chrome.
-# Com a aceleração desligada (a GT 420 trava o PC com o nouveau), o Chrome decodifica e desenha tudo no
-# processador e engasga; o mpv decodifica no processador com folga e o xv só põe a imagem na tela.
+# Nasceu na época da GT 420, quando o Chrome sem aceleração decodificava e desenhava tudo no processador.
+# O mpv decodifica no processador com folga e o xv só põe a imagem na tela.
 # Sem vídeo no Chrome, abre o link do YouTube que estiver copiado.
 import glob, os, re, shutil, sqlite3, subprocess, tempfile, time
 from urllib.parse import parse_qs, urlparse

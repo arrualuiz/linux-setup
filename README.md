@@ -11,8 +11,8 @@ Serve de guia caso eu formate ou troque de PC, e de diário dos problemas que j�
 |---|---|
 | Xeon E5-2620 v3 · Huananzhi X99-8M-F · 16 GB RAM | Nome do PC: `arruadev`. Ajustado para desempenho máximo (ver [Desempenho](#-desempenho)). |
 | SSD Kingston A400 240 GB | O Linux foi instalado num **notebook** e o SSD veio para este PC. No Linux isso funciona normal (ele detecta o hardware a cada boot); só sobraram pacotes de notebook, já removidos. |
-| **GeForce GT 420** | Usa o driver livre **nouveau**. **Não instalar driver NVIDIA**: a placa (Fermi) não tem driver proprietário que funcione nos kernels novos. ⚠️ **Com aceleração de vídeo ligada no Chrome, o PC inteiro congela** (ver [Problemas resolvidos](#-problemas-que-já-resolvi)). Upgrade pensado: RX 580 (AMD funciona de fábrica no Linux). |
-| Monitores | HDMI-1 1920x1080 (principal) + VGA-1 1440x900 |
+| **GeForce RTX 2060 6 GB** (Gigabyte) | Entrou em 04/11/2026 no lugar da GT 420. Driver `nvidia-driver-595-open`, instalado pelo Gerenciador de drivers (ver [Problemas resolvidos](#-problemas-que-já-resolvi)). Tem 4 saídas, por causa do terceiro monitor. Apps Flatpak precisam do pacote da NVIDIA na mesma versão do driver (`org.freedesktop.Platform.GL.nvidia-595-99-02`); depois de atualizar o driver, rodar `flatpak update`. |
+| Monitores | HDMI-0 1920x1080 (principal) + DP-4 1440x900 |
 | Som | Caixa de som = placa **C-Media CMI8738** (PCI). Precisa do parâmetro de boot `iommu=pt` (ver [Problemas resolvidos](#-problemas-que-já-resolvi)). O som **onboard Realtek não funciona** no Linux (defeito da placa-mãe, não adianta insistir). Headset HyperX Cloud Stinger Core 7.1 USB. A webcam tem microfone. |
 
 ---
@@ -41,7 +41,7 @@ Serve de guia caso eu formate ou troque de PC, e de diário dos problemas que j�
    sudo bash ~/dev/linux-setup/ajustar-sistema.sh
    ```
 7. **Passos manuais** (ver a seção abaixo).
-8. **Aplicar as configurações** (barras de tarefas, atalhos, ícones, lançadores, energia; com a GT 420, desliga a aceleração do Chrome, do VS Code e do Spotify). Rodar **com o Chrome e o Spotify fechados**:
+8. **Aplicar as configurações** (barras de tarefas, atalhos, ícones, lançadores, energia):
    ```bash
    bash ~/dev/linux-setup/aplicar-configuracoes.sh
    ```
@@ -60,7 +60,7 @@ Serve de guia caso eu formate ou troque de PC, e de diário dos problemas que j�
   - **Chrome Contas** (`~/.config/chrome-contas`): a conta `arrualuiz`.
   - Não adicionar perfis novos dentro de um Chrome (o "Adicionar perfil" do Chrome): eles caem no mesmo botão. Para outra conta, criar outro Chrome separado, como está em [Problemas que já resolvi](#-problemas-que-já-resolvi).
 - **Google Agenda:** bloquear as notificações no Chrome Pessoal em `chrome://settings/content/notifications`.
-- **Android Studio:** ao criar um emulador (AVD), em *Emulated Performance → Graphics* escolher **Software**, enquanto a placa for a GT 420.
+- **Driver da NVIDIA:** abrir o Gerenciador de drivers, escolher o `nvidia-driver-*-open` recomendado, aplicar e reiniciar. Se a tela travar no meio, ver [Problemas que já resolvi](#-problemas-que-já-resolvi).
 - **Spotify:** abrir pelo menu e entrar com a minha conta.
 - **Paseo** (instalado em 31/10/2026): é o app que eu uso para o Claude Code, no PC e no celular. Ele usa o `claude` que já está instalado e logado, então instalar o Claude Code antes. Fica em `~/.local/opt/paseo/`, com as configurações em `~/.paseo/`, e se atualiza sozinho. Para usar no celular: instalar o app ([Android](https://play.google.com/store/apps/details?id=sh.paseo), [iPhone](https://apps.apple.com/app/paseo-pocket-engineer/id6758887924)) e, no PC, ir em Configurações → o PC → **Pair Device** e ler o QR code com o celular.
 - **Meus repositórios:** clonar todos de volta:
@@ -94,7 +94,7 @@ Serve de guia caso eu formate ou troque de PC, e de diário dos problemas que j�
 
 ## 🎨 Aparência e barra de tarefas
 
-- **Efeitos visuais desligados**, porque a GT 420 é fraca.
+- **Efeitos visuais desligados**, desde a época da GT 420.
 - **Duas barras, uma por monitor**, no estilo Windows 10:
   - Monitor 1: menu + apps fixados + setinha ^ + rede + saída de som 🎧/🔊 + volume + relógio (duas linhas).
   - Monitor 2: menu + só as janelas abertas nele + saída de som 🎧/🔊 + volume + relógio.
@@ -138,11 +138,15 @@ cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor   # performance
 powerprofilesctl get                                        # performance
 ```
 
-### 🎬 Vídeo sem placa de vídeo decente
+### 🌡️ Placa de vídeo e temperatura
 
-A GT 420 com nouveau não decodifica vídeo, então o YouTube roda todo no processador. A extensão **enhanced-h264ify** (Chrome Pessoal) bloqueia os formatos pesados (VP8, VP9, AV1) e os vídeos a 60 fps, e o YouTube cai para **H.264 até 1080p 30 fps**, que é o mais leve. Se quiser vídeo a 60 fps, desmarcar "Block 60fps" nas opções da extensão; o Xeon aguenta, só usa mais CPU. **Atenção:** vídeo gravado a 60 fps (futebol, jogo, muito canal novo) só tem 720p e 1080p a 60 fps, então com o "Block 60fps" ele fica em **480p** no Chrome.
+O Monitor do Sistema não mostra a placa de vídeo, então uso o **Resources** (`net.nokyan.Resources`, Flatpak), que aparece no menu como **Recursos**. Na aba GPU ficam os gráficos de uso, codificador e decodificador de vídeo, memória de vídeo e temperatura, além da frequência e do consumo. O processador também tem gráfico de temperatura. Os gráficos são só do momento: fechou o app, perdeu o histórico.
 
-**Super + Y passa o vídeo do Chrome pro mpv (30/10/2026):** com o vídeo tocando no YouTube, Super + Y pausa o Chrome e abre o mesmo vídeo no mpv, do mesmo segundo, em até 1080p 60 fps. No Chrome sem aceleração tudo (decodificar, redimensionar, desenhar a página) é feito pelo processador; no mpv o processador só decodifica e o `vo=xv` põe a imagem na tela. Teste com o Chrome aberto: 30 s de 1080p60, em H.264 ou VP9, decodificados em ~24 s, ou seja, sobra. Sem vídeo tocando, ele abre o link do YouTube que estiver copiado.
+### 🎬 Vídeo
+
+Na época da GT 420 o YouTube rodava todo no processador, e por isso a extensão **enhanced-h264ify** (Chrome Pessoal) bloqueia os formatos pesados (VP8, VP9, AV1) e os vídeos a 60 fps. Com a RTX 2060 a aceleração do Chrome voltou, mas a extensão continua lá. **Atenção:** vídeo gravado a 60 fps (futebol, jogo, muito canal novo) só tem 720p e 1080p a 60 fps, então com o "Block 60fps" marcado ele fica em **480p** no Chrome. Para ver em 1080p 60 fps, desmarcar essa opção nas configurações da extensão.
+
+**Super + Y passa o vídeo do Chrome pro mpv (30/10/2026):** com o vídeo tocando no YouTube, Super + Y pausa o Chrome e abre o mesmo vídeo no mpv, do mesmo segundo, em até 1080p 60 fps. Nasceu na época da GT 420, quando o Chrome sem aceleração fazia tudo (decodificar, redimensionar, desenhar a página) no processador; no mpv o processador só decodifica e o `vo=xv` põe a imagem na tela. Com a RTX 2060 e o "Block 60fps" desmarcado ele deixa de ser necessário para a imagem, e sobra a vantagem de ver sem propaganda. Teste com o Chrome aberto: 30 s de 1080p60, em H.264 ou VP9, decodificados em ~24 s, ou seja, sobra. Sem vídeo tocando, ele abre o link do YouTube que estiver copiado.
   - Quem faz é o `configs/bin/youtube-no-mpv`: o Chrome mostra o vídeo que está tocando no controle de mídia do sistema (MPRIS), com título e posição, mas não com o link. O script procura esse título no histórico do Chrome (uma cópia do `History`, que fica travado) e manda o link pro mpv com `--start`. O formato escolhido está no `ytdl-format` do `configs/mpv/mpv.conf` (H.264 até 1080p; sem H.264, qualquer um menos AV1).
   - Quem baixa o vídeo é o `yt-dlp` que vem dentro do Flatpak do mpv. Quando o YouTube muda alguma coisa ele para de funcionar (aparece um aviso); `flatpak update` traz o novo.
   - No mpv não tem comentário nem recomendação, e também não tem propaganda.
@@ -154,6 +158,12 @@ Filmes do PC abrem no **mpv** (`io.mpv.Mpv`, Flatpak), não no Celluloid. A conf
 ---
 
 ## 🩺 Problemas que já resolvi
+
+### PC travou no meio da instalação do driver da NVIDIA (04/11/2026)
+- **Sintoma:** a tela congelou enquanto o Gerenciador de drivers instalava o `nvidia-driver-595-open`, e o PC reiniciou sem desligar direito. Depois disso o driver novo funcionava, mas a instalação tinha ficado pela metade: 46 pacotes de 32 bits sem configurar e a imagem de inicialização sem refazer.
+- **Causa:** durante a instalação a RTX 2060 ainda roda no `nouveau`, e ele derrubou a tela (`gsp: mmu fault` e `Xorg: channel 5 killed!` em `journalctl -b -1 -k`). O PC continuou ligado por baixo, então a instalação andou mais 37 segundos e parou no `libc6:i386`.
+- **Solução:** `sudo dpkg --configure -a` num terminal e reiniciar.
+- **Como conferir:** `dpkg --audit` não mostra nada e `nvidia-smi` mostra a placa.
 
 ### Todas as contas do Chrome no mesmo botão da barra (28/10/2026)
 - **Sintoma:** eu tinha 4 contas (Arrua, PUCPR, UFPR e Contas) como perfis dentro do mesmo Chrome. Todas as janelas ficavam com o mesmo ícone e iam para o botão do "Chrome Arrua", sem dar para saber qual era qual.
@@ -175,7 +185,7 @@ Filmes do PC abrem no **mpv** (`io.mpv.Mpv`, Flatpak), não no Celluloid. A conf
 ### PC congelando inteiro, precisando reiniciar no botão (06/10/2026)
 - **Sintoma:** a tela travava por completo e só voltava reiniciando. Aconteceu 2 vezes seguidas.
 - **Causa:** o Chrome usa a placa de vídeo para desenhar as páginas. Com a GT 420 e o driver nouveau, ele manda comandos que a placa não aguenta, e ela trava. Como ela também desenha a tela toda, o PC inteiro congela. O log mostrava milhares de erros `nouveau ... gr: DATA_ERROR ... chrome[...]` e um `TRAP` logo antes de cada travamento.
-- **Solução:** aceleração de hardware **desligada** nos dois Chromes (`chrome://settings/system` → "Usar aceleração gráfica quando disponível") e no VS Code (`"disable-hardware-acceleration": true` em `~/.vscode/argv.json`, que usa o mesmo motor do Chrome). O **Spotify** (instalado em 10/10) também usa esse motor, então fica igual: `ui.hardware_acceleration=false` em `~/.var/app/com.spotify.Client/config/spotify/prefs`, ou no app em Configurações → Compatibilidade. O `aplicar-configuracoes.sh` já faz isso sozinho se detectar a GT 420. O **Paseo** (31/10) também usa esse motor: o lançador dele abre com `env PASEO_ELECTRON_FLAGS=--disable-gpu`, porque ele não aceita o `--disable-gpu` direto (dá `error: unknown option '--disable-gpu'` e não abre).
+- **Solução:** aceleração de hardware **desligada** nos dois Chromes (`chrome://settings/system` → "Usar aceleração gráfica quando disponível") e no VS Code (`"disable-hardware-acceleration": true` em `~/.vscode/argv.json`, que usa o mesmo motor do Chrome). O **Spotify** (instalado em 10/10) também usa esse motor, então fica igual: `ui.hardware_acceleration=false` em `~/.var/app/com.spotify.Client/config/spotify/prefs`, ou no app em Configurações → Compatibilidade. Tudo isso foi desfeito em 04/11/2026, quando a RTX 2060 entrou no lugar da GT 420. O **Paseo** (31/10) também usa esse motor: o lançador dele abre com `env PASEO_ELECTRON_FLAGS=--disable-gpu`, porque ele não aceita o `--disable-gpu` direto (dá `error: unknown option '--disable-gpu'` e não abre).
 - **Como conferir se voltou a acontecer:**
   ```bash
   journalctl -b -1 -k | grep -c DATA_ERROR   # erros da placa no boot anterior
@@ -184,7 +194,7 @@ Filmes do PC abrem no **mpv** (`io.mpv.Mpv`, Flatpak), não no Celluloid. A conf
 ### Congelou de novo, agora com o Chrome já sem aceleração (07/10/2026)
 - **Sintoma:** o PC travou inteiro entre 21:32 e 22:17. O log simplesmente para (não deu tempo de gravar o erro), e nem a tarefa automática das 22:17 rodou, ou seja, o sistema todo parou, não só a tela.
 - **Suspeito principal:** o **Monitor do Sistema** (`gnome-system-monitor`). Ele é um app GTK4, que também desenha usando a placa de vídeo. Em 2 dias ele derrubou a GT 420 três vezes (`nouveau ... gr: TRAP ... gnome-system-mo[...]` e depois o app fecha sozinho). A última foi às 21:00, meia hora antes do travamento. Depois de um erro desses o driver nouveau pode ficar instável.
-- **Solução:** `export GSK_RENDERER=cairo` no `~/.profile`, para os apps GTK4 desenharem sem a placa de vídeo. Vale a partir do próximo login. O `aplicar-configuracoes.sh` já faz isso se detectar a GT 420.
+- **Solução:** `export GSK_RENDERER=cairo` no `~/.profile`, para os apps GTK4 desenharem sem a placa de vídeo. Vale a partir do próximo login. Desfeito em 04/11/2026, com a RTX 2060.
 - **Como conferir:**
   ```bash
   echo $GSK_RENDERER                       # tem que mostrar: cairo
@@ -205,17 +215,6 @@ Filmes do PC abrem no **mpv** (`io.mpv.Mpv`, Flatpak), não no Celluloid. A conf
 
 ### Som onboard sem saída (02/10/2026)
 - O codec Realtek ALC662 da placa-mãe Huananzhi tem o pino da saída ligado como entrada. É defeito de hardware, não tem conserto por software. Solução: usar a placa C-Media PCI.
-
----
-
-## 🔜 Quando a RX 580 chegar
-
-1. Trocar a placa e ligar o PC. **Não precisa instalar driver nenhum**: o driver da AMD (`amdgpu`) já vem no kernel e o firmware dela já está instalado.
-2. Religar a aceleração de hardware nos **dois** Chromes (`chrome://settings/system`), no VS Code (comentar a linha `disable-hardware-acceleration` em `~/.vscode/argv.json`), no Spotify (Configurações → Compatibilidade) e no Paseo (tirar o `env PASEO_ELECTRON_FLAGS=--disable-gpu` do `configs/aplicativos/paseo.desktop`).
-3. Se quiser voltar ao Celluloid, tirar o `GSK_RENDERER=cairo` do `~/.profile`. O mpv pode trocar `vo=xv` por `vo=gpu` e `hwdec=no` por `hwdec=vaapi` em `~/.var/app/io.mpv.Mpv/config/mpv/mpv.conf`.
-4. No Android Studio, voltar o *Graphics* dos emuladores para **Hardware** ou **Automatic**.
-5. Conferir com `glxinfo -B | grep renderer` (deve aparecer AMD/Radeon).
-6. Atualizar a tabela de hardware deste README.
 
 ---
 
