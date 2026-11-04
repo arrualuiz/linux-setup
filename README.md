@@ -142,6 +142,15 @@ powerprofilesctl get                                        # performance
 
 O Monitor do Sistema não mostra a placa de vídeo, então uso o **Resources** (`net.nokyan.Resources`, Flatpak), que aparece no menu como **Recursos**. Na aba GPU ficam os gráficos de uso, codificador e decodificador de vídeo, memória de vídeo e temperatura, além da frequência e do consumo. O processador também tem gráfico de temperatura. Os gráficos são só do momento: fechou o app, perdeu o histórico.
 
+Quem guarda o histórico é o **`vigia-temperatura`**, um serviço do usuário que fica ligado direto e grava processador e placa a cada 30 s em `~/.local/share/vigia-temperatura/AAAA-MM.csv`.
+
+| | Placa de vídeo | Processador | O que acontece |
+|---|---|---|---|
+| Atenção | 80 °C | 75 °C | Aviso na tela |
+| **Pico** | **85 °C** | **82 °C** | Aviso crítico e alarme, porque em jogo de tela cheia o aviso pode não aparecer |
+
+Só avisa de novo depois de esfriar 5 °C. Os limites ficam no começo de `configs/bin/vigia-temperatura`. Para desligar: `systemctl --user disable --now vigia-temperatura`.
+
 ### 🎬 Vídeo
 
 Na época da GT 420 o YouTube rodava todo no processador, e por isso a extensão **enhanced-h264ify** (Chrome Pessoal) bloqueia os formatos pesados (VP8, VP9, AV1) e os vídeos a 60 fps. Com a RTX 2060 a aceleração do Chrome voltou, mas a extensão continua lá. **Atenção:** vídeo gravado a 60 fps (futebol, jogo, muito canal novo) só tem 720p e 1080p a 60 fps, então com o "Block 60fps" marcado ele fica em **480p** no Chrome. Para ver em 1080p 60 fps, desmarcar essa opção nas configurações da extensão.
@@ -246,3 +255,4 @@ Filmes do PC abrem no **mpv** (`io.mpv.Mpv`, Flatpak), não no Celluloid. A conf
 | `configs/bin/` | Scripts dos atalhos: `smile-auto-fechar` (Super + .) e `abrir-projeto` (atalhos de projeto) e `pastas-de-projetos` (pastas "Últimos projetos" e "Faculdade") |
 | `configs/wireplumber/` | Nomes amigáveis do som (só serve com o mesmo hardware) |
 | `configs/autostart/` | CopyQ abrindo junto com o sistema |
+| `configs/systemd/` | Serviço do `vigia-temperatura` |

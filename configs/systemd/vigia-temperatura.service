@@ -1,0 +1,11 @@
+# Grava a temperatura do processador e da placa de vídeo e avisa na tela quando esquenta
+[Unit]
+Description=Vigia de temperatura do processador e da placa de vídeo
+
+[Service]
+ExecStart=%h/.local/bin/vigia-temperatura
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=default.target

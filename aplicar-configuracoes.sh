@@ -121,5 +121,12 @@ gsettings set org.cinnamon.desktop.screensaver lock-enabled false
 echo "==> Perfil de energia: desempenho"
 powerprofilesctl set performance 2>/dev/null || true
 
+echo "==> Vigia de temperatura (processador e placa de vídeo)"
+mkdir -p ~/.config/systemd/user
+cp $C/systemd/vigia-temperatura.service ~/.config/systemd/user/
+systemctl --user daemon-reload
+systemctl --user enable vigia-temperatura.service
+systemctl --user restart vigia-temperatura.service
+
 echo
 echo "Pronto! Faça logout e login (ou reinicie) para tudo aparecer certinho."
