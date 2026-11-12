@@ -1,6 +1,9 @@
 // Sino de notificações com o número em destaque e um modo Não perturbe que guarda
 // em vez de apagar. Baseado no notifications@cinnamon.org: o "Desativar notificações"
 // do Cinnamon joga fora o que chega com ele ligado, então nada somava no sino.
+// Notificação repetida (mesmo app, título e texto, como os prints do Flameshot)
+// não soma: a nova fica no lugar da antiga, com quantas vezes chegou no título.
+// O número conta só as não lidas: abrir a lista marca tudo como lido, e elas ficam lá.
 const Applet = imports.ui.applet;
 const Main = imports.ui.main;
 const PopupMenu = imports.ui.popupMenu;
@@ -86,6 +89,9 @@ class Notificacoes extends Applet.TextIconApplet {
             this.menu.destroy();
         this.menu = new Applet.AppletPopupMenu(this, orientation);
         this.menuManager.addMenu(this.menu);
+        this.menu.connect("open-state-changed", (menu, aberto) => {
+            if (aberto) this._marcarLidas();
+        });
         this._montarMenu();
     }
 
@@ -156,6 +162,8 @@ class Notificacoes extends Applet.TextIconApplet {
                 n._inNotificationBin = true;
                 global.reparentActor(n.actor, this._lista);
                 n._timeLabel.show();
+                mostrarVezes(n);    // o update() do Cinnamon reescreve o título
+                n._lida = this.menu.isOpen;    // mudou: é novidade, a não ser que eu esteja vendo
             }
             this._atualizar();
             return;
@@ -176,13 +184,31 @@ class Notificacoes extends Applet.TextIconApplet {
             this._atualizar();
         });
         n._timeLabel.show();
+        n._lida = this.menu.isOpen;
+        this._juntarRepetida(n);
         this._atualizar();
+    }
+
+    // A repetida mais velha sai da lista e passa a contagem pra nova
+    _juntarRepetida(n) {
+        let chave = chaveDe(n);
+        let antiga = this.notificacoes.find(o => o !== n && !o._destroyed && chaveDe(o) == chave);
+        if (!antiga) return;
+        n._vezes = (antiga._vezes || 1) + 1;
+        mostrarVezes(n);
+        antiga.destroy(NotificationDestroyedReason.DISMISSED);
     }
 
     _abrir() {
         for (let n of this.notificacoes)
             n._timeLabel.clutter_text.set_markup(quando(n._timestamp));
         this.menu.toggle();
+    }
+
+    _marcarLidas() {
+        for (let n of this.notificacoes)
+            n._lida = true;
+        this._atualizar();
     }
 
     _alternarSilencio() {
@@ -213,16 +239,18 @@ class Notificacoes extends Applet.TextIconApplet {
     _atualizar() {
         if (!this.menu || !this._lista) return;
         let total = this.notificacoes.length;
-        let urgente = this.notificacoes.some(n => n.urgency == Urgency.CRITICAL);
+        let novas = this.notificacoes.filter(n => !n._lida);
+        let urgente = novas.some(n => n.urgency == Urgency.CRITICAL);
 
         this.set_applet_icon_symbolic_name(this.naoPerturbe ? ICONE_SILENCIO : ICONE);
-        this._applet_icon.set_style(total == 0 ? null : (urgente ? COR_URGENTE : COR_SINO));
-        this.set_applet_label(total > 0 ? (total > 99 ? "99+" : total.toString()) : "");
-        this._applet_label.set_style(total > 0 ? ESTILO_NUMERO : null);
+        this._applet_icon.set_style(novas.length == 0 ? null : (urgente ? COR_URGENTE : COR_SINO));
+        this.set_applet_label(novas.length > 0 ? (novas.length > 99 ? "99+" : novas.length.toString()) : "");
+        this._applet_label.set_style(novas.length > 0 ? ESTILO_NUMERO : null);
         this.actor.show();    // sempre na barra, mesmo vazio
 
         let estado = this.naoPerturbe ? "Não perturbe ligado: nada aparece na tela\n" : "";
-        this.set_applet_tooltip(`${estado}${contagem(total)}\nClique do meio (ou Super+Ctrl+N): Não perturbe`);
+        let naoLidas = novas.length == 0 ? "" : (novas.length == 1 ? " (1 nova)" : ` (${novas.length} novas)`);
+        this.set_applet_tooltip(`${estado}${contagem(total)}${naoLidas}\nClique do meio (ou Super+Ctrl+N): Não perturbe`);
         this._titulo.label.set_text(contagem(total));
         this._limparItem.actor.visible = total > 0;
         this._chave.setToggleState(this.naoPerturbe);
@@ -264,6 +292,18 @@ function main(metadata, orientation, panelHeight, instanceId) {
 function contagem(total) {
     if (total == 0) return "Nenhuma notificação";
     return total == 1 ? "1 notificação" : `${total} notificações`;
+}
+
+// Caminho de arquivo não conta: "Captura salva como /…/a.png" e "/…/b.png" são a mesma
+function chaveDe(n) {
+    let corpo = n._bodyUrlHighlighter ? n._bodyUrlHighlighter.actor.text : "";
+    corpo = corpo.replace(/(^|\s)\/\S+/g, "$1…");
+    return [n.source ? n.source.title : "", n.title, corpo].join("\n");
+}
+
+function mostrarVezes(n) {
+    if (n._vezes > 1)
+        n._titleLabel.clutter_text.set_markup(`<b>${n.title}</b>  ·  ${n._vezes}×`);
 }
 
 function quando(hora) {
