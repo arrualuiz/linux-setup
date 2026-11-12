@@ -3,7 +3,7 @@
 // do Cinnamon joga fora o que chega com ele ligado, então nada somava no sino.
 // Notificação repetida (mesmo app, título e texto, como os prints do Flameshot)
 // não soma: a nova fica no lugar da antiga, com quantas vezes chegou no título.
-// O número conta só as não lidas: abrir a lista marca tudo como lido, e elas ficam lá.
+// O número conta só as não lidas: fechar a lista marca tudo como lido, e elas ficam lá.
 const Applet = imports.ui.applet;
 const Main = imports.ui.main;
 const PopupMenu = imports.ui.popupMenu;
@@ -89,8 +89,10 @@ class Notificacoes extends Applet.TextIconApplet {
             this.menu.destroy();
         this.menu = new Applet.AppletPopupMenu(this, orientation);
         this.menuManager.addMenu(this.menu);
+        // Marca como lido ao fechar, não ao abrir: o menu abre quando o botão desce, e se o
+        // número sumisse ali o sino encolhia, o botão subia fora dele e o Cinnamon fechava a lista
         this.menu.connect("open-state-changed", (menu, aberto) => {
-            if (aberto) this._marcarLidas();
+            if (!aberto) this._marcarLidas();
         });
         this._montarMenu();
     }
