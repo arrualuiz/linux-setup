@@ -36,7 +36,7 @@ Serve de guia caso eu formate ou troque de PC, e de diário dos problemas que j�
    ```bash
    bash ~/dev/linux-setup/instalar-usuario.sh
    ```
-6. **Ajustes do sistema** (parâmetros de boot, nome do PC, swap, remoção de sobras de notebook):
+6. **Ajustes do sistema** (parâmetros de boot, nome do PC, zram, remoção de sobras de notebook):
    ```bash
    sudo bash ~/dev/linux-setup/ajustar-sistema.sh
    ```
@@ -128,15 +128,17 @@ Serve de guia caso eu formate ou troque de PC, e de diário dos problemas que j�
 |---|---|---|
 | `cpufreq.default_governor=performance` | boot (GRUB) | Processador sempre pronto na frequência máxima, sem esperar "acordar". |
 | `mitigations=off` | boot (GRUB) | Desliga as proteções contra falhas do tipo Spectre/Meltdown. Num Xeon v3 dá uns 5–15% a mais em compilação, Docker e disco. **Troca segurança por velocidade**: para voltar, tirar o parâmetro de `/etc/default/grub`, rodar `sudo update-grub` e reiniciar. |
-| `vm.swappiness=10` | `/etc/sysctl.d/99-desempenho.conf` | Usa a swap só quando a RAM está realmente acabando. |
+| **zram** (8 GB, zstd, prioridade 100) | `/etc/systemd/zram-generator.conf` (pacote `systemd-zram-generator`) | Swap comprimida dentro da própria RAM (uns 3 pra 1), muito mais rápida que o `/swapfile` no SSD, que fica de reserva só pra quando o zram encher. Entrou em 12/11/2026: com o Chrome cheio de abas, o PC tinha gravado 4,3 GB no swap do SSD nos primeiros 25 min ligado, e é isso que trava ao voltar pra uma aba velha. |
+| `vm.swappiness=180` e mais 3 | `/etc/sysctl.d/99-desempenho.conf` | Com o zram, usar swap é barato, então o sistema manda pra lá o que está parado e guarda RAM pro que estou usando (valores do ArchWiki pra zram; antes era `swappiness=10`, pensado pro swap no SSD). |
 | Perfil de energia **desempenho** | `powerprofilesctl set performance` | Turbo mais agressivo. |
 | Efeitos visuais desligados | Cinnamon | Menos trabalho para a placa de vídeo. |
 
-Os três primeiros ficam em `ajustar-sistema.sh` e os dois últimos em `aplicar-configuracoes.sh`. Para conferir depois de reiniciar:
+Os quatro primeiros ficam em `ajustar-sistema.sh` e os dois últimos em `aplicar-configuracoes.sh`. Para conferir depois de reiniciar:
 ```bash
 cat /proc/cmdline                                           # parâmetros de boot
 cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor   # performance
 powerprofilesctl get                                        # performance
+zramctl; swapon --show                                      # zram0 com prioridade 100, /swapfile com -1
 ```
 
 ### 🌡️ Placa de vídeo e temperatura
@@ -249,7 +251,7 @@ Filmes do PC abrem no **mpv** (`io.mpv.Mpv`, Flatpak), não no Celluloid. A conf
 |---|---|
 | `instalar-dev.sh` | Programas via apt (precisa de `sudo`) |
 | `instalar-usuario.sh` | Flatpaks, Node, Jupyter, Toolbox, Paseo, Git (sem senha) |
-| `ajustar-sistema.sh` | Boot (GRUB), nome do PC, swap, remoção de sobras de notebook (precisa de `sudo`) |
+| `ajustar-sistema.sh` | Boot (GRUB), nome do PC, zram (swap comprimida na RAM), remoção de sobras de notebook (precisa de `sudo`) |
 | `aplicar-configuracoes.sh` | Barras, Pomodoro, setinha da bandeja, saída de som, atalhos, ícones, lançadores, som, energia, aceleração de vídeo |
 | `configs/cinnamon/` | Barras de tarefas (16/17.json), painéis, atalhos (`atalhos.dconf`), setinha da bandeja (`setinha/`), relógio (`relogio/`), applet de trocar a saída de som (`saida-de-som/`), sino de notificações (`notificacoes/`) |
 | `configs/aplicativos/` + `configs/icones/` | Lançadores dos Chromes (Arrua, PUC, UFPR e Contas), do Jupyter, do Paseo e dos projetos (`projeto-*.desktop`) |

@@ -2,7 +2,7 @@
 # Ajustes do sistema para este PC (Xeon E5-2620 v3 + Huananzhi X99 + RTX 2060).
 # Precisa de senha. Rodar num terminal normal, com o Chrome fechado:
 #   sudo bash ~/dev/linux-setup/ajustar-sistema.sh
-# Depois REINICIAR o PC: o nome novo e os parâmetros de boot só valem depois disso.
+# Na primeira vez, depois REINICIAR o PC: o nome novo e os parâmetros de boot só valem depois disso.
 # Pode rodar de novo sem problema (não duplica nada).
 set -euo pipefail
 
@@ -29,9 +29,30 @@ echo "==> Nome do PC: $NOME_PC (era 'notebook', o SSD veio de um notebook)"
 hostnamectl set-hostname "$NOME_PC"
 sed -i "s/^127\.0\.1\.1\s.*/127.0.1.1\t$NOME_PC/" /etc/hosts
 
-echo "==> Menos uso de swap (16 GB de RAM dão conta)"
-echo 'vm.swappiness=10' > /etc/sysctl.d/99-desempenho.conf
+echo "==> Swap comprimida na própria RAM (zram)"
+# O Chrome com muitas abas enchia os 16 GB e o resto ia pro /swapfile no SSD (Kingston A400,
+# lento): 4,3 GB gravados no swap nos primeiros 25 min ligado (12/11/2026). O zram guarda
+# essas páginas comprimidas com zstd (uns 3 pra 1) na RAM: 8 GB de swap que ocupam uns 2–3 GB.
+# O /swapfile fica de reserva, com prioridade menor: só é usado se o zram encher.
+apt-get install -y systemd-zram-generator
+cat > /etc/systemd/zram-generator.conf <<'FIM'
+[zram0]
+zram-size = ram / 2
+compression-algorithm = zstd
+swap-priority = 100
+FIM
+systemctl daemon-reload
+systemctl start dev-zram0.swap
+# Com o swap rápido, compensa usar mais ele e menos o cache de disco (valores do ArchWiki
+# para zram). page-cluster=0: lê uma página por vez, no zram não vale ler adiantado.
+cat > /etc/sysctl.d/99-desempenho.conf <<'FIM'
+vm.swappiness=180
+vm.watermark_boost_factor=0
+vm.watermark_scale_factor=125
+vm.page-cluster=0
+FIM
 sysctl -q -p /etc/sysctl.d/99-desempenho.conf
+swapon --show
 
 echo "==> Removendo sobras de notebook"
 # verificador do pendrive de instalação, applet de placa híbrida NVIDIA, leitor de digital,
@@ -50,4 +71,4 @@ fi
 systemctl reset-failed
 
 echo
-echo "Pronto! Agora reinicie o PC."
+echo "Pronto! O zram já está valendo. Reiniciar só é preciso na primeira vez (nome do PC e boot)."
