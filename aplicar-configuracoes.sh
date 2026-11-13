@@ -90,7 +90,7 @@ d=~/.config/cinnamon/spices/calendar@cinnamon.org
 mkdir -p $d
 cp $C/cinnamon/relogio/13.json $C/cinnamon/relogio/20.json $d/
 
-echo "==> Atalhos de teclado (Print, Shift+Print, Super+V, Super+., Super+Y, Super+Tab, Ctrl+Alt+P)"
+echo "==> Atalhos de teclado (Print, Shift+Print, Super+V, Super+., Super+Y, Super+Tab, Ctrl+Alt+P, teclas de mídia)"
 # Scripts dos atalhos (ex.: smile-auto-fechar no Win+.)
 mkdir -p ~/.local/bin && cp $C/bin/* ~/.local/bin/ && chmod +x ~/.local/bin/*
 dconf load /org/cinnamon/desktop/keybindings/ < $C/cinnamon/atalhos.dconf

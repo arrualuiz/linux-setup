@@ -89,6 +89,7 @@ Serve de guia caso eu formate ou troque de PC, e de diário dos problemas que j�
 | **Super + N** | Abre a lista de notificações | Notificações (applet meu) |
 | **Super + Ctrl + N** | Liga/desliga o Não perturbe (também: clique do meio no sino) | Notificações (applet meu) |
 | **Super + Shift + C** | Limpa todas as notificações | Notificações (applet meu) |
+| **Teclas de mídia** (tocar/pausar, parar, próxima, anterior) | Vão pro player que está tocando; com tudo pausado, pro último que controlei | `teclas-de-midia` |
 
 ---
 
@@ -170,6 +171,11 @@ Filmes do PC abrem no **mpv** (`io.mpv.Mpv`, Flatpak), não no Celluloid. A conf
 ---
 
 ## 🩺 Problemas que já resolvi
+
+### Teclas de mídia pausando o Chrome em vez do Spotify (12/11/2026)
+No teclado HyperX Alloy Core RGB, volume e mudo funcionavam, mas tocar/pausar, parar, próxima e anterior não faziam nada na música. As teclas chegavam certas (conferi com `xinput test-xi2 --root` no "Consumer Control" do teclado): o problema era o `csd-media-keys` do Cinnamon, que manda essas teclas sempre pro **primeiro player que abriu** (MPRIS) e fica nele até ele fechar. Era o Chrome, com uma aba de vídeo pausada, então o comando ia pra lá e o Spotify não obedecia.
+  - Solução: as cinco teclas saíram dos atalhos de mídia do Cinnamon (`media-keys` vazios no `atalhos.dconf`) e viraram atalhos personalizados (custom6 a custom10) que chamam o `configs/bin/teclas-de-midia`. Ele escolhe o player que está tocando (se forem vários, o último que eu controlei) e, com tudo pausado, o último que controlei, que fica anotado em `~/.cache/teclas-de-midia/`. Volume e mudo continuam com o Cinnamon.
+  - Pra ver quem recebe hoje: `dbus-monitor --session "interface='org.mpris.MediaPlayer2.Player'"` e apertar a tecla.
 
 ### PC travou no meio da instalação do driver da NVIDIA (04/11/2026)
 - **Sintoma:** a tela congelou enquanto o Gerenciador de drivers instalava o `nvidia-driver-595-open`, e o PC reiniciou sem desligar direito. Depois disso o driver novo funcionava, mas a instalação tinha ficado pela metade: 46 pacotes de 32 bits sem configurar e a imagem de inicialização sem refazer.
@@ -255,7 +261,7 @@ Filmes do PC abrem no **mpv** (`io.mpv.Mpv`, Flatpak), não no Celluloid. A conf
 | `aplicar-configuracoes.sh` | Barras, Pomodoro, setinha da bandeja, saída de som, atalhos, ícones, lançadores, som, energia, aceleração de vídeo |
 | `configs/cinnamon/` | Barras de tarefas (16/17.json), painéis, atalhos (`atalhos.dconf`), setinha da bandeja (`setinha/`), relógio (`relogio/`), applet de trocar a saída de som (`saida-de-som/`), sino de notificações (`notificacoes/`) |
 | `configs/aplicativos/` + `configs/icones/` | Lançadores dos Chromes (Arrua, PUC, UFPR e Contas), do Jupyter, do Paseo e dos projetos (`projeto-*.desktop`) |
-| `configs/bin/` | Scripts dos atalhos: `smile-auto-fechar` (Super + .) e `abrir-projeto` (atalhos de projeto) e `pastas-de-projetos` (pastas "Últimos projetos" e "Faculdade") |
+| `configs/bin/` | Scripts dos atalhos: `smile-auto-fechar` (Super + .) e `abrir-projeto` (atalhos de projeto) e `pastas-de-projetos` (pastas "Últimos projetos" e "Faculdade") e `teclas-de-midia` (tocar/pausar, próxima e anterior no player certo) |
 | `configs/wireplumber/` | Nomes amigáveis do som (só serve com o mesmo hardware) |
 | `configs/autostart/` | CopyQ abrindo junto com o sistema |
 | `configs/systemd/` | Serviço do `vigia-temperatura` |

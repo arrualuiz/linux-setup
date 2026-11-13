@@ -1,0 +1,89 @@
+#!/usr/bin/env python3
+# Teclas de mídia do teclado (tocar/pausar, parar, próxima, anterior) no player certo.
+#
+# O Cinnamon manda essas teclas sempre para o primeiro player que abriu, e ele
+# fica nesse até fechar. Na prática era o Chrome (qualquer aba com vídeo, mesmo
+# pausada), e a música tocando no Spotify não obedecia.
+#
+# Aqui a escolha é:
+#   1. o player que está tocando (se forem vários, o último que eu controlei);
+#   2. se nada está tocando, o último que eu controlei (pausei o Spotify, o play volta nele);
+#   3. senão, o primeiro pausado.
+#
+# Uso: teclas-de-midia tocar-pausar | pausar | parar | proxima | anterior
+import os
+import sys
+
+import gi
+
+gi.require_version("Gio", "2.0")
+from gi.repository import Gio, GLib
+
+ACOES = {
+    "tocar-pausar": "PlayPause",
+    "pausar": "Pause",
+    "parar": "Stop",
+    "proxima": "Next",
+    "anterior": "Previous",
+}
+MPRIS = "org.mpris.MediaPlayer2."
+CAMINHO = "/org/mpris/MediaPlayer2"
+ULTIMO = os.path.join(GLib.get_user_cache_dir(), "teclas-de-midia", "ultimo-player")
+
+bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
+
+
+def chamar(destino, caminho, interface, metodo, args=None):
+    return bus.call_sync(destino, caminho, interface, metodo, args, None,
+                         Gio.DBusCallFlags.NONE, 2000, None)
+
+
+def situacao(player):
+    try:
+        r = chamar(player, CAMINHO, "org.freedesktop.DBus.Properties", "Get",
+                   GLib.Variant("(ss)", ("org.mpris.MediaPlayer2.Player", "PlaybackStatus")))
+        return r.unpack()[0]
+    except GLib.Error:
+        return None
+
+
+def ler_ultimo():
+    try:
+        with open(ULTIMO) as f:
+            return f.read().strip()
+    except OSError:
+        return ""
+
+
+def guardar_ultimo(player):
+    os.makedirs(os.path.dirname(ULTIMO), exist_ok=True)
+    with open(ULTIMO, "w") as f:
+        f.write(player)
+
+
+def escolher(players, ultimo):
+    estado = {p: situacao(p) for p in players}
+    tocando = [p for p in players if estado[p] == "Playing"]
+    if tocando:
+        return ultimo if ultimo in tocando else tocando[0]
+    if ultimo in players:
+        return ultimo
+    pausados = [p for p in players if estado[p] == "Paused"]
+    return (pausados or players)[0]
+
+
+def main():
+    if len(sys.argv) != 2 or sys.argv[1] not in ACOES:
+        sys.exit("uso: teclas-de-midia " + " | ".join(ACOES))
+    nomes = chamar("org.freedesktop.DBus", "/org/freedesktop/DBus",
+                   "org.freedesktop.DBus", "ListNames").unpack()[0]
+    players = [n for n in nomes if n.startswith(MPRIS)]
+    if not players:
+        return
+    alvo = escolher(players, ler_ultimo())
+    chamar(alvo, CAMINHO, "org.mpris.MediaPlayer2.Player", ACOES[sys.argv[1]])
+    guardar_ultimo(alvo)
+
+
+if __name__ == "__main__":
+    main()

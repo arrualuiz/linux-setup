@@ -1,5 +1,5 @@
 [/]
-custom-list=['custom0', 'custom1', 'custom2', 'custom3', 'custom4', 'custom5']
+custom-list=['custom0', 'custom1', 'custom2', 'custom3', 'custom4', 'custom5', 'custom6', 'custom7', 'custom8', 'custom9', 'custom10']
 
 [custom-keybindings/custom0]
 binding=['<Primary><Alt>p']
@@ -31,9 +31,39 @@ binding=['<Super>y']
 command='youtube-no-mpv'
 name='Vídeo do YouTube no mpv'
 
+[custom-keybindings/custom6]
+binding=['XF86AudioPlay']
+command='teclas-de-midia tocar-pausar'
+name='Tocar/pausar no player certo'
+
+[custom-keybindings/custom7]
+binding=['XF86AudioPause']
+command='teclas-de-midia pausar'
+name='Pausar no player certo'
+
+[custom-keybindings/custom8]
+binding=['XF86AudioStop']
+command='teclas-de-midia parar'
+name='Parar no player certo'
+
+[custom-keybindings/custom9]
+binding=['XF86AudioNext']
+command='teclas-de-midia proxima'
+name='Próxima no player certo'
+
+[custom-keybindings/custom10]
+binding=['XF86AudioPrev']
+command='teclas-de-midia anterior'
+name='Anterior no player certo'
+
 [media-keys]
 area-screenshot=@as []
+next=@as []
+pause=@as []
+play=@as []
+previous=@as []
 screenshot=@as []
+stop=@as []
 
 [wm]
 switch-to-workspace-up=['<Super>Tab', '<Control><Alt>Up', '<Alt>F1']
