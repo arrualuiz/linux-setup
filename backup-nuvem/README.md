@@ -14,7 +14,7 @@ O app sincroniza a pasta inteira nos dois sentidos. Com `node_modules`, `.venv` 
 
 ## Instalar (uma vez)
 
-1. **rclone** (o do `apt` é de 2022; o OneDrive pede um mais novo):
+1. **rclone** (o do `apt` é a versão 1.60, de 2022; o site oficial tem a atual, com as correções mais recentes para o OneDrive):
    ```bash
    cd /tmp && wget https://downloads.rclone.org/rclone-current-linux-amd64.deb && sudo apt install ./rclone-current-linux-amd64.deb
    ```
