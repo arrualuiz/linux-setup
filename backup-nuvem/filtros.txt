@@ -1,0 +1,13 @@
+# O que NÃO vai para a nuvem: se refaz com npm install, pip, gradle etc.
+- node_modules/**
+- .venv/**
+- venv/**
+- __pycache__/**
+- *.pyc
+- .gradle/**
+- .next/**
+- .cache/**
+- .pytest_cache/**
+- build/**
+- dist/**
+- target/**

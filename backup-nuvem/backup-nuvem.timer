@@ -1,0 +1,10 @@
+[Unit]
+Description=Backup no OneDrive todo dia (e no boot, se o PC estava desligado na hora)
+
+[Timer]
+OnCalendar=*-*-* 13:00
+Persistent=true
+RandomizedDelaySec=10min
+
+[Install]
+WantedBy=timers.target
