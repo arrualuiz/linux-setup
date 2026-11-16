@@ -51,6 +51,27 @@ if pkill -9 -x nemo-desktop; then
   sleep 2; pgrep -x nemo-desktop >/dev/null || (setsid nemo-desktop >/dev/null 2>&1 &)
 fi
 
+echo "==> Explorador (Nemo): pastas de trabalho nos Marcadores e Recentes com 30 dias"
+# "Recentes" da barra lateral guarda 30 dias em vez de 7
+gsettings set org.cinnamon.desktop.privacy recent-files-max-age 30
+gsettings set org.gnome.desktop.privacy recent-files-max-age 30 2>/dev/null || true
+# Marcadores: só acrescenta o que falta, depois das 5 pastas padrão (que ficam em "Meu computador")
+b=~/.config/gtk-3.0/bookmarks
+mkdir -p ~/.config/gtk-3.0; touch "$b"
+while IFS='|' read -r pasta nome; do
+  [ -d "$pasta" ] || continue
+  uri=$(python3 -c 'import pathlib,sys; print(pathlib.Path(sys.argv[1]).as_uri())' "$pasta")
+  awk -v u="$uri" '$1==u{f=1} END{exit !f}' "$b" || echo "$uri $nome" >> "$b"
+done <<EOF
+$HOME/dev/projetos|Projetos
+$HOME/dev/projetos/rascunhos-e-anotacoes|Rascunhos e anotações
+$HOME/dev/site-casamento|Site do casamento
+$HOME/dev/stigpr-site|Site do STIGPR
+$HOME/dev/faculdade|Faculdade (arquivos)
+$D/Faculdade|Faculdade (atalhos)
+$D/Financeiro|Financeiro
+EOF
+
 echo "==> Pomodoro (applet da loja do Cinnamon), do lado do relógio no monitor 1"
 if [ ! -d ~/.local/share/cinnamon/applets/pomodoro@gregfreeman.org ]; then
   t=$(mktemp -d)
