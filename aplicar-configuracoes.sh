@@ -25,10 +25,11 @@ for t in text/html x-scheme-handler/http x-scheme-handler/https x-scheme-handler
   xdg-mime default chrome-pessoal.desktop $t
 done
 
-echo "==> Ícones na área de trabalho (só no monitor principal)"
-gsettings set org.nemo.desktop desktop-layout 'true::false'
-for f in chrome-pessoal chrome-puc chrome-ufpr chrome-contas jupyter-lab \
-         projeto-casamento projeto-eleicoes projeto-financeiro projeto-site projeto-stigpr; do
+echo "==> Ícones na área de trabalho (nos dois monitores: os atalhos dos sites eu arrumo no segundo)"
+gsettings set org.nemo.desktop desktop-layout 'true::true'
+# os projeto-*.desktop ficam só no menu: na área de trabalho, desde 16/11, quem abre o VS Code de cada projeto são os
+# atalhos dos sites ("Casamento - trabalhar (VS Code)"), que o pastas-de-projetos monta
+for f in chrome-pessoal chrome-puc chrome-ufpr chrome-contas jupyter-lab; do
   cp $A/$f.desktop "$D/"; chmod +x "$D/$f.desktop"
   gio set "$D/$f.desktop" metadata::trusted true 2>/dev/null || true
 done
@@ -36,17 +37,21 @@ for f in org.gnome.Terminal com.microsoft.VSCode sublime_text dbeaver-ce firefox
   src=$(ls /usr/share/applications/$f.desktop 2>/dev/null) || continue
   cp "$src" "$D/"; chmod +x "$D/$f.desktop"; gio set "$D/$f.desktop" metadata::trusted true 2>/dev/null || true
 done
-# Pastas "Últimos projetos" (mexidos desde 01/09/2026) e "Faculdade", com um atalho VS Code + Claude em cada projeto
+# Pastas "Últimos projetos" (mexidos desde 01/09/2026) e "Faculdade", com um atalho VS Code + Claude em cada projeto,
+# e os atalhos dos sites soltos na área de trabalho (a lista é o SITES.md do caderno)
 bash $C/bin/pastas-de-projetos
-# Ícones livres pra arrastar: sem "organizar automaticamente", mas encaixando na grade.
+# Ícones livres pra arrastar nos dois monitores: sem "organizar automaticamente", mas encaixando na grade.
 # O nemo-desktop regrava esse arquivo, então edita antes e mata com -9 (o Cinnamon reabre).
 m=~/.config/nemo/desktop-metadata
 mkdir -p ~/.config/nemo
-if grep -q '^\[desktop-monitor-0\]' "$m" 2>/dev/null; then
-  sed -i '/^nemo-icon-view-auto-layout=/d; /^\[desktop-monitor-0\]/a nemo-icon-view-auto-layout=false' "$m"
-else
-  printf '[desktop-monitor-0]\nnemo-icon-view-auto-layout=false\n' >> "$m"
-fi
+touch "$m"
+for mon in 0 1; do
+  if grep -q "^\[desktop-monitor-$mon\]" "$m"; then
+    sed -i "/^\[desktop-monitor-$mon\]/,/^\$/{/^nemo-icon-view-auto-layout=/d}; /^\[desktop-monitor-$mon\]/a nemo-icon-view-auto-layout=false" "$m"
+  else
+    printf '\n[desktop-monitor-%s]\nnemo-icon-view-auto-layout=false\n' "$mon" >> "$m"
+  fi
+done
 if pkill -9 -x nemo-desktop; then
   sleep 2; pgrep -x nemo-desktop >/dev/null || (setsid nemo-desktop >/dev/null 2>&1 &)
 fi

@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
-# Monta na área de trabalho as pastas "Últimos projetos" e "Faculdade", com um atalho por projeto ou matéria.
-# Cada atalho abre o VS Code na pasta e o Claude com a frase de retomar (via abrir-projeto).
+# Monta na área de trabalho as pastas "Últimos projetos" e "Faculdade", com um atalho por projeto ou matéria, e os
+# atalhos dos sites. Cada atalho de projeto abre o VS Code na pasta e o Claude com a frase de retomar (via abrir-projeto).
 #   Últimos projetos: repositórios do ~/dev com commit desde a data (padrão 01/09/2026) ou com arquivo sem commit,
 #                     do mais recente pro mais antigo.
 #   Faculdade:        as matérias do último período da PUCPR, a UFPR e as pastas com os arquivos.
-# Rodar de novo atualiza as duas. Uso: pastas-de-projetos [AAAA-MM-DD]
+#   Sites:            soltos na área de trabalho, os sites que eu fiz (a tabela do SITES.md do caderno): um atalho
+#                     que abre cada site e um que abre o VS Code + Claude em cada projeto.
+# Rodar de novo atualiza tudo, sem mexer na posição dos atalhos de site. Uso: pastas-de-projetos [AAAA-MM-DD]
 desde="${1:-2026-09-01}"
 D="$(xdg-user-dir DESKTOP)"
 
@@ -65,4 +67,56 @@ ufpr=~/dev/faculdade/ufpr/estatistica
 ln -sfn "$ads" "$F/Arquivos PUCPR"
 ln -sfn ~/dev/faculdade/ufpr "$F/Arquivos UFPR"
 
-echo "Últimos projetos: $(ls "$P"/*.desktop | wc -l) · Faculdade: $(ls "$F"/*.desktop | wc -l) matérias"
+# Sites: cada linha da tabela "## Sites" do SITES.md do caderno vira um atalho que abre o endereço no navegador padrão
+# ("Casamento - site"), e cada pasta de projeto vira um "Casamento - trabalhar (VS Code)", com o VS Code e o Claude.
+# A lista fica no caderno (repositório privado) porque alguns endereços não são públicos. Sem o arquivo, nada muda.
+# Eles ficam soltos na área de trabalho (não numa pasta) pra eu arrumar onde quiser, no segundo monitor. Por isso o
+# atalho é reescrito no mesmo arquivo, nunca apagado e criado de novo: a posição que eu escolhi fica presa ao arquivo.
+# Só sai o atalho de site que não está mais na tabela; os daqui têm a linha X-Sites=1, então nada meu é apagado.
+lista=~/dev/projetos/rascunhos-e-anotacoes/SITES.md
+n_sites=0
+if [ -f "$lista" ]; then
+  # 16/11 à tarde eles ficaram numa pasta "Sites": sai a pasta (só se não sobrar nada além dos atalhos daqui)
+  if [ -d "$D/Sites" ]; then find "$D/Sites" -maxdepth 1 -name '*.desktop' -delete; rmdir "$D/Sites" 2>/dev/null; fi
+  declare -A trabalhar=() feitos=()
+  # marcar ARQUIVO: deixa o atalho confiável (sem o aviso do Nemo) e com a marca dos atalhos de site
+  marcar() { echo 'X-Sites=1' >> "$1"; chmod +x "$1"; gio set "$1" metadata::trusted true 2>/dev/null; feitos["$1"]=1; }
+  # o ícone (coluna Ícone) é o mesmo nos dois atalhos do projeto, como nos atalhos antigos (Casamento, Financeiro…)
+  while IFS=$'\t' read -r projeto rotulo url dir icone; do
+    [ -z "$url" ] && continue
+    icone=${icone:-web-browser}
+    dir=${dir/#\~/$HOME}
+    arq="$D/$projeto - $rotulo.desktop"
+    # o endereço vai entre aspas: o "#" do "#tarefas" é reservado no Exec de um .desktop
+    cat > "$arq" <<EOF
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=$projeto - $rotulo
+Comment=Abre $url
+Exec=xdg-open "$url"
+Icon=$icone
+Terminal=false
+StartupNotify=false
+EOF
+    marcar "$arq"
+    if [ -d "$dir" ] && [ -z "${trabalhar[$dir]}" ]; then
+      arq="$D/$projeto - trabalhar (VS Code).desktop"
+      atalho "$arq" "$projeto - trabalhar (VS Code)" "$dir" "Vamos continuar o projeto $projeto ($(basename "$dir"))."
+      sed -i "s/^Icon=.*/Icon=$icone/" "$arq"
+      marcar "$arq"
+      trabalhar[$dir]=1
+    fi
+  done < <(awk -F'|' '
+    /^## / { dentro = ($0 ~ /^## Sites/); next }
+    dentro && /^\|/ && $2 !~ /^ *(Projeto|-+) *$/ {
+      for (i = 2; i <= 6; i++) gsub(/^ +| +$/, "", $i)
+      print $2 "\t" $3 "\t" $4 "\t" $5 "\t" $6
+    }' "$lista")
+  for f in "$D"/*.desktop; do
+    grep -qx 'X-Sites=1' "$f" 2>/dev/null && [ -z "${feitos[$f]}" ] && rm -f "$f"
+  done
+  n_sites=${#feitos[@]}
+fi
+
+echo "Últimos projetos: $(ls "$P"/*.desktop | wc -l) · Faculdade: $(ls "$F"/*.desktop | wc -l) matérias · Sites: $n_sites atalhos na área de trabalho"
