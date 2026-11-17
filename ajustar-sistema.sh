@@ -23,7 +23,16 @@ for p in iommu=pt cpufreq.default_governor=performance mitigations=off; do
   fi
 done
 grep '^GRUB_CMDLINE_LINUX_DEFAULT=' /etc/default/grub
+# Menu escondido: entra sozinho no Mint em 3 s. Esc (ou segurar Shift) nesses 3 s mostra o menu
+# (memtest, modo de recuperação). O 98_mintsysadm.cfg, que o Mint gera, deixava o menu esperando
+# pra sempre (51 s até eu apertar Enter em 12/11/2026); este 99 é lido depois e vale no lugar dele.
+# Depois de um boot que não terminou (travamento), o próprio GRUB mostra o menu por 30 s.
+cat > /etc/default/grub.d/99-inicio-rapido.cfg <<'FIM'
+GRUB_TIMEOUT_STYLE=hidden
+GRUB_TIMEOUT=3
+FIM
 update-grub
+grep -m2 -E "set timeout(_style)?=" /boot/grub/grub.cfg
 
 echo "==> Nome do PC: $NOME_PC (era 'notebook', o SSD veio de um notebook)"
 hostnamectl set-hostname "$NOME_PC"

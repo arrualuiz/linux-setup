@@ -130,13 +130,14 @@ Serve de guia caso eu formate ou troque de PC, e de diário dos problemas que j�
 | Ajuste | Onde | O que faz |
 |---|---|---|
 | `cpufreq.default_governor=performance` | boot (GRUB) | Processador sempre pronto na frequência máxima, sem esperar "acordar". |
+| Menu do GRUB escondido, 3 s | `/etc/default/grub.d/99-inicio-rapido.cfg` | Entra sozinho no Mint. Pra escolher outra coisa (memtest, modo de recuperação), apertar **Esc** nesses 3 s. Antes o menu esperava pra sempre: em 12/11/2026 foram 51 s até eu apertar Enter, de 1min25 do boot inteiro. Depois de um travamento, o GRUB mostra o menu sozinho por 30 s. |
 | `mitigations=off` | boot (GRUB) | Desliga as proteções contra falhas do tipo Spectre/Meltdown. Num Xeon v3 dá uns 5–15% a mais em compilação, Docker e disco. **Troca segurança por velocidade**: para voltar, tirar o parâmetro de `/etc/default/grub`, rodar `sudo update-grub` e reiniciar. |
 | **zram** (8 GB, zstd, prioridade 100) | `/etc/systemd/zram-generator.conf` (pacote `systemd-zram-generator`) | Swap comprimida dentro da própria RAM (uns 3 pra 1), muito mais rápida que o `/swapfile` no SSD, que fica de reserva só pra quando o zram encher. Entrou em 12/11/2026: com o Chrome cheio de abas, o PC tinha gravado 4,3 GB no swap do SSD nos primeiros 25 min ligado, e é isso que trava ao voltar pra uma aba velha. |
 | `vm.swappiness=180` e mais 3 | `/etc/sysctl.d/99-desempenho.conf` | Com o zram, usar swap é barato, então o sistema manda pra lá o que está parado e guarda RAM pro que estou usando (valores do ArchWiki pra zram; antes era `swappiness=10`, pensado pro swap no SSD). |
 | Perfil de energia **desempenho** | `powerprofilesctl set performance` | Turbo mais agressivo. |
 | Efeitos visuais desligados | Cinnamon | Menos trabalho para a placa de vídeo. |
 
-Os quatro primeiros ficam em `ajustar-sistema.sh` e os dois últimos em `aplicar-configuracoes.sh`. Para conferir depois de reiniciar:
+Os cinco primeiros ficam em `ajustar-sistema.sh` e os dois últimos em `aplicar-configuracoes.sh`. Para conferir depois de reiniciar:
 ```bash
 cat /proc/cmdline                                           # parâmetros de boot
 cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor   # performance
