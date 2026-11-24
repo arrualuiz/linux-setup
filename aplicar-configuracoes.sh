@@ -154,5 +154,11 @@ systemctl --user daemon-reload
 systemctl --user enable vigia-temperatura.service
 systemctl --user restart vigia-temperatura.service
 
+echo "==> Aviso no celular quando o PC liga ou acorda (falta rodar: avisa-pc-ligou --configurar)"
+cp $C/systemd/avisa-pc-ligou.service ~/.config/systemd/user/
+systemctl --user daemon-reload
+systemctl --user enable avisa-pc-ligou.service
+systemctl --user restart avisa-pc-ligou.service
+
 echo
 echo "Pronto! Faça logout e login (ou reinicie) para tudo aparecer certinho."

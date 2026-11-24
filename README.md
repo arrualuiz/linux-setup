@@ -159,6 +159,14 @@ Quem guarda o histórico é o **`vigia-temperatura`**, um serviço do usuário q
 
 Só avisa de novo depois de esfriar 5 °C. Os limites ficam no começo de `configs/bin/vigia-temperatura`. Para desligar: `systemctl --user disable --now vigia-temperatura`.
 
+### 🔔 Aviso no celular quando o PC liga
+
+O **`avisa-pc-ligou`** é um serviço do usuário que manda uma notificação pelo app **ntfy** quando o PC liga e também quando acorda da suspensão, que é o mais comum aqui. O aviso diz a hora e quanto tempo ele ficou suspenso. Sem internet na hora, ele espera e manda depois, com a hora certa.
+
+Para configurar (uma vez): instalar o ntfy no celular, rodar `avisa-pc-ligou --configurar` num terminal e assinar no app o tópico que aparecer. O tópico é a senha do aviso e fica em `~/.config/avisa-pc-ligou/topico`, fora do git. Testar: `avisa-pc-ligou --teste`. Ver o que ele fez: `journalctl --user -u avisa-pc-ligou`. Desligar: `systemctl --user disable --now avisa-pc-ligou`.
+
+Só funciona no Linux: se o PC ligar no Windows, não avisa. E só avisa depois que o sistema entra, então o tempo parado no menu do GRUB não conta.
+
 ### 🎬 Vídeo
 
 Na época da GT 420 o YouTube rodava todo no processador, e por isso a extensão **enhanced-h264ify** (Chrome Pessoal) bloqueia os formatos pesados (VP8, VP9, AV1) e os vídeos a 60 fps. Com a RTX 2060 a aceleração do Chrome voltou, mas a extensão continua lá. **Atenção:** vídeo gravado a 60 fps (futebol, jogo, muito canal novo) só tem 720p e 1080p a 60 fps, então com o "Block 60fps" marcado ele fica em **480p** no Chrome. Para ver em 1080p 60 fps, desmarcar essa opção nas configurações da extensão.
@@ -268,4 +276,4 @@ No teclado HyperX Alloy Core RGB, volume e mudo funcionavam, mas tocar/pausar, p
 | `configs/bin/` | Scripts dos atalhos: `smile-auto-fechar` (Super + .) e `abrir-projeto` (atalhos de projeto) e `pastas-de-projetos` (pastas "Últimos projetos" e "Faculdade", e os atalhos dos sites) e `teclas-de-midia` (tocar/pausar, próxima e anterior no player certo) |
 | `configs/wireplumber/` | Nomes amigáveis do som (só serve com o mesmo hardware) |
 | `configs/autostart/` | CopyQ abrindo junto com o sistema |
-| `configs/systemd/` | Serviço do `vigia-temperatura` |
+| `configs/systemd/` | Serviços do `vigia-temperatura` e do `avisa-pc-ligou` |

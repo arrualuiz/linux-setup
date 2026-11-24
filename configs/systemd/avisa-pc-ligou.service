@@ -1,0 +1,11 @@
+# Avisa no celular (ntfy) quando o PC liga ou acorda da suspensão
+[Unit]
+Description=Aviso no celular quando o PC liga ou acorda
+
+[Service]
+ExecStart=%h/.local/bin/avisa-pc-ligou
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=default.target

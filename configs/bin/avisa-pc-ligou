@@ -1,0 +1,114 @@
+#!/usr/bin/env python3
+"""Avisa no celular (app ntfy) quando o PC liga ou acorda da suspensão.
+
+  avisa-pc-ligou                o serviço: avisa ao ligar e fica de olho na suspensão
+  avisa-pc-ligou --configurar   cria o tópico (o endereço secreto do aviso), mostra e manda um teste
+  avisa-pc-ligou --teste        manda um aviso de teste
+
+O tópico fica em ~/.config/avisa-pc-ligou/topico, fora do git: quem souber o nome dele lê os avisos.
+Sem internet na hora, o aviso espera e sai depois, com a hora em que o PC ligou de verdade.
+"""
+import json, secrets, sys, time, urllib.request
+from datetime import datetime
+from pathlib import Path
+
+SERVIDOR = 'https://ntfy.sh'
+PASTA = Path.home() / '.config/avisa-pc-ligou'
+TOPICO = PASTA / 'topico'
+ULTIMO_BOOT = PASTA / 'ultimo-boot'
+INTERVALO = 5       # segundos entre uma olhada e outra
+COCHILO = 10        # suspensão mais curta que isso não conta
+RECENTE = 600       # serviço começando com o PC ligado há mais tempo que isso: não é "acabou de ligar"
+VALIDADE = 86400    # aviso preso sem internet por mais de um dia é descartado
+
+
+def suspenso():
+    """Segundos que o PC passou suspenso desde que ligou: o BOOTTIME conta a suspensão, o MONOTONIC não."""
+    return time.clock_gettime(time.CLOCK_BOOTTIME) - time.clock_gettime(time.CLOCK_MONOTONIC)
+
+
+def duracao(s):
+    m = max(1, round(s / 60))
+    return f'{m} min' if m < 60 else f'{m // 60}h{m % 60:02d}'
+
+
+def ler_topico():
+    return TOPICO.read_text().strip() if TOPICO.exists() else ''
+
+
+def mandar(topico, titulo, texto):
+    corpo = json.dumps({'topic': topico, 'title': titulo, 'message': texto, 'tags': ['computer'], 'priority': 4})
+    req = urllib.request.Request(SERVIDOR, data=corpo.encode(), headers={'Content-Type': 'application/json'})
+    urllib.request.urlopen(req, timeout=10).close()
+
+
+def ligou_agora():
+    """True uma vez só por boot, e só se o PC acabou de ligar (reiniciar o serviço não avisa de novo)."""
+    boot = Path('/proc/sys/kernel/random/boot_id').read_text().strip()
+    if ULTIMO_BOOT.exists() and ULTIMO_BOOT.read_text().strip() == boot:
+        return False
+    PASTA.mkdir(parents=True, exist_ok=True, mode=0o700)
+    ULTIMO_BOOT.write_text(boot + '\n')
+    return time.clock_gettime(time.CLOCK_BOOTTIME) < RECENTE
+
+
+def vigiar():
+    fila = []
+
+    def anotar(titulo, texto):
+        print(titulo, texto, flush=True)
+        if ler_topico():
+            fila.append((time.time(), titulo, texto))
+        else:
+            print('sem tópico: rode avisa-pc-ligou --configurar', flush=True)
+
+    if ligou_agora():
+        anotar('🖥️ O PC ligou', datetime.now().strftime('Às %H:%M de %d/%m.'))
+    antes, espera = suspenso(), 0
+    while True:
+        agora = suspenso()
+        if agora - antes > COCHILO:
+            anotar('🖥️ O PC acordou', datetime.now().strftime('Às %H:%M de %d/%m')
+                   + f', depois de {duracao(agora - antes)} suspenso.')
+            espera = 0
+        antes = agora
+        fila[:] = [f for f in fila if time.time() - f[0] < VALIDADE]
+        if fila and time.monotonic() >= espera:
+            try:
+                mandar(ler_topico(), *fila[0][1:])
+                print('aviso mandado', flush=True)
+                fila.pop(0)
+            except (OSError, ValueError) as e:  # sem internet ou servidor fora: tenta de novo
+                print(f'não saiu ({e}), tento de novo', flush=True)
+                espera = time.monotonic() + 15
+        time.sleep(INTERVALO)
+
+
+def configurar():
+    if not ler_topico():
+        PASTA.mkdir(parents=True, exist_ok=True, mode=0o700)
+        TOPICO.touch(mode=0o600)
+        TOPICO.write_text('pc-' + secrets.token_hex(10) + '\n')
+    print('No app ntfy do celular: botão + (Assinar tópico) e digite exatamente:\n')
+    print(f'    {ler_topico()}\n')
+    print('Deixe o servidor padrão (ntfy.sh) e aceite as notificações.')
+    input('Quando tiver assinado, aperte Enter que eu mando um teste... ')
+    teste()
+
+
+def teste():
+    if not ler_topico():
+        sys.exit('Falta o tópico: rode avisa-pc-ligou --configurar')
+    mandar(ler_topico(), '🖥️ Teste do PC', datetime.now().strftime('Às %H:%M. Se chegou, está tudo certo.'))
+    print('Teste mandado. Tem que aparecer no celular em alguns segundos.')
+
+
+if __name__ == '__main__':
+    if sys.argv[1:] == ['--configurar']:
+        configurar()
+    elif sys.argv[1:] == ['--teste']:
+        teste()
+    elif sys.argv[1:]:
+        sys.exit(__doc__)
+    else:
+        vigiar()
